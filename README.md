@@ -80,8 +80,8 @@ approved `unthinkmedia` GitHub account. Authentication is hosted at
 `https://porchfest-github-auth.rutherford-porchfest.workers.dev`.
 The main desk is a lightweight, self-hosted artist editor:
 
-1. Choose a name from **The lineup**. Only the 21 artist profiles currently
-   linked to the agenda are listed, matching the public artist directory.
+1. Choose a name from **The lineup**. Every act on the agenda is listed once,
+   including acts that do not yet have an artist profile.
 2. Edit the artist name, genre, **Donation / payment link**, or public music and
    social links in the details panel. IDs are kept unchanged automatically.
 3. Click **Save changes**. This commits directly to `main`; GitHub Pages usually
@@ -89,7 +89,10 @@ The main desk is a lightweight, self-hosted artist editor:
    their display name in every linked agenda set.
 
 Unscheduled profiles remain in the source JSON but are not shown in the artist
-desk. Scheduled community acts without artist profiles are not invented.
+desk. For an act without a profile, the desk uses its existing agenda name and
+a placeholder genre. Saving creates its profile with the same stable agenda ID;
+payment and music links remain empty until supplied by an organizer. The saved
+profile then appears in the public artist directory.
 Blank payment fields become `null`, keeping the tip-jar fallback.
 Switching artists, cancelling, or leaving with a draft asks before discarding it.
 The desk reads the latest guide before saving, preserves unrelated edits, and
@@ -180,7 +183,7 @@ It checks phone/tablet/desktop layouts,
 time-aware states, all pages, search, maps, payment-service labels and tip-jar behavior, and loading
 errors. Set `PORCHFEST_ARTIFACTS` to choose a screenshot output directory.
 `tests/artist-desk-browser.py` verifies the main artist desk: OAuth popup handoff,
-21-only list, details, exact saves, agenda-name synchronization, unsaved changes,
+complete agenda list, missing-profile creation, details, exact saves, agenda-name synchronization, unsaved changes,
 concurrent-edit protection, authentication errors, and responsive layouts.
 It intercepts every GitHub API request and never makes a real repository write.
 `tests/admin-browser.py` verifies the advanced editor setup screen, real CMS login startup,

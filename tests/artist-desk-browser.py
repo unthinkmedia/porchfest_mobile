@@ -10,6 +10,8 @@ from playwright.sync_api import sync_playwright, expect
 BASE = "http://127.0.0.1:8765"
 AUTH = "https://porchfest-auth.example.workers.dev"
 original = json.loads((Path(__file__).resolve().parents[1] / "data.json").read_text())
+original["artists"] = [artist for artist in original["artists"] if artist["id"] != "bob-stritch"]
+scheduled_count = len({entry["artistId"] for entry in original["sets"]})
 remote = copy.deepcopy(original)
 revision = 1
 writes = []
@@ -80,8 +82,8 @@ with sync_playwright() as p:
     expect(page.locator("#workspace")).to_be_hidden()
     page.get_by_role("button", name="Login with GitHub").click()
     expect(page.locator("#workspace")).to_be_visible(timeout=15000)
-    expect(page.locator("#profile-count")).to_have_text("21 artists")
-    expect(page.locator(".profile-button")).to_have_count(21)
+    expect(page.locator("#profile-count")).to_have_text(f"{scheduled_count} artists")
+    expect(page.locator(".profile-button")).to_have_count(scheduled_count)
     assert not page.locator('[data-artist="7th-street"]').count()
     expect(page.locator("#artist-form")).to_be_hidden()
     page.get_by_label("Find a scheduled artist").fill("juke")
@@ -116,7 +118,7 @@ with sync_playwright() as p:
     expect(page.locator("#artist-heading")).to_have_text("Juke Jams Updated")
     expect(page.get_by_role("button", name="Save changes")).to_be_disabled()
     expect(page.locator("#draft-status")).to_have_text("No unsaved changes")
-    assert len(remote["artists"]) == 43
+    assert len(remote["artists"]) == len(original["artists"])
 
     for width in [320, 390, 768, 1280]:
         page.set_viewport_size({"width": width, "height": 1000})
@@ -165,9 +167,30 @@ with sync_playwright() as p:
     page.get_by_role("button", name="Cancel changes").click()
     expect(page.get_by_label("Artist name", exact=True)).to_have_value("Juke Jams Updated")
     expect(page.get_by_role("button", name="Save changes")).to_be_disabled()
+
+    page.locator('[data-artist="bob-stritch"]').click()
+    expect(page.get_by_label("Artist name", exact=True)).to_have_value("Bob Stritch")
+    expect(page.get_by_label("Genre", exact=True)).to_have_value("Genre to be announced")
+    expect(page.get_by_label("Donation / payment link")).to_have_value("")
+    page.get_by_label("Genre", exact=True).fill("Folk")
+    page.get_by_label("Donation / payment link").fill("https://cash.app/$test-only-preview")
+    page.get_by_role("button", name="Save changes").click()
+    expect(page.locator("#desk-status")).to_contain_text("Saved to GitHub")
+    expected_after_bob = copy.deepcopy(expected)
+    next(artist for artist in expected_after_bob["artists"] if artist["id"] == "juke-jams")["genre"] = "Conflicting artist edit"
+    next(artist for artist in expected_after_bob["artists"] if artist["id"] == "juke-jams")["tipUrl"] = None
+    expected_after_bob["artists"].append({
+        "id": "bob-stritch", "name": "Bob Stritch", "genre": "Folk",
+        "tipUrl": "https://cash.app/$test-only-preview", "links": [],
+    })
+    assert remote == expected_after_bob
+    assert len(writes) == 4
     page.reload()
     expect(page.locator("#workspace")).to_be_visible()
-    expect(page.locator("#profile-count")).to_have_text("21 artists")
+    expect(page.locator("#profile-count")).to_have_text(f"{scheduled_count} artists")
+    page.locator('[data-artist="bob-stritch"]').click()
+    expect(page.get_by_label("Genre", exact=True)).to_have_value("Folk")
+    expect(page.get_by_label("Donation / payment link")).to_have_value("https://cash.app/$test-only-preview")
     expect(page.get_by_role("link", name="Agenda & porches")).to_have_attribute("href", "./guide.html")
     page.get_by_role("button", name="Log out", exact=True).click()
     expect(page.get_by_role("button", name="Login with GitHub")).to_be_enabled()
@@ -182,4 +205,4 @@ with sync_playwright() as p:
     expect(page.locator("#workspace")).to_be_hidden()
     assert not errors, errors
     browser.close()
-    print("Artist desk checks passed: OAuth, 21-only list, details, name sync, exact saves, draft protection, conflicts, auth errors, and responsive layouts.")
+    print("Artist desk checks passed: OAuth, complete agenda list, missing-profile creation, details, name sync, exact saves, draft protection, conflicts, auth errors, and responsive layouts.")

@@ -46,10 +46,10 @@ with sync_playwright() as p:
         assert "Rutherford" in link.get_attribute("href")
 
     page.goto(f"{BASE}/#artists")
-    expect(page.locator(".artist-card")).to_have_count(21)
-    expect(page.locator("#artist-count")).to_have_text("21 artist profiles")
     scheduled_ids = {entry["artistId"] for entry in schedule["sets"]}
     expected_ids = {artist["id"] for artist in schedule["artists"] if artist["id"] in scheduled_ids}
+    expect(page.locator(".artist-card")).to_have_count(len(expected_ids))
+    expect(page.locator("#artist-count")).to_have_text(f"{len(expected_ids)} artist profiles")
     actual_ids = set(page.locator(".artist-card").evaluate_all(
         "(cards) => cards.map(card => card.dataset.artist)"
     ))
@@ -69,7 +69,7 @@ with sync_playwright() as p:
     expect(page.locator("#artist-count")).to_have_text("0 artist profiles")
     expect(page.locator("#no-artists")).to_be_visible()
     search.fill("")
-    expect(page.locator(".artist-card:visible")).to_have_count(21)
+    expect(page.locator(".artist-card:visible")).to_have_count(len(expected_ids))
     search.fill("rhodora")
     assert page.locator(".artist-card:visible").count() == 1
     assert page.get_by_role("status").inner_text() == "1 artist profile"

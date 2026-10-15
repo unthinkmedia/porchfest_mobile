@@ -151,7 +151,7 @@ async function authenticate(user) {
   $("#workspace").hidden = false;
   $("#logout").hidden = false;
   $("#guide-link").hidden = false;
-  status.textContent = `Signed in as ${identity.login}. Only artist profiles on the agenda are listed.`;
+  status.textContent = `Signed in as ${identity.login}. All agenda entries are listed, including those needing artist details.`;
   renderList();
 }
 

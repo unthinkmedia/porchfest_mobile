@@ -1,16 +1,27 @@
 import { validateGuide } from "./validate.mjs";
 
 export function scheduledProfiles(guide) {
-  const ids = new Set(guide.sets.map(set => set.artistId));
-  return guide.artists.filter(artist => ids.has(artist.id))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  const profiles = new Map(guide.artists.map(artist => [artist.id, artist]));
+  const scheduled = new Map();
+  for (const set of guide.sets) {
+    if (!scheduled.has(set.artistId)) {
+      scheduled.set(set.artistId, profiles.get(set.artistId) ?? {
+        id: set.artistId,
+        name: set.name,
+        genre: set.name.includes("Got Talent") ? "Community showcase" : "Genre to be announced",
+        tipUrl: null,
+        links: [],
+      });
+    }
+  }
+  return [...scheduled.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export function updateArtist(latest, original, artistId, fields) {
   const before = original.artists.find(artist => artist.id === artistId);
   const current = latest.artists.find(artist => artist.id === artistId);
   const setsFor = guide => guide.sets.filter(set => set.artistId === artistId);
-  if (!before || !current || !setsFor(latest).length) {
+  if (!setsFor(original).length || !setsFor(latest).length) {
     throw new Error("This artist is no longer on the agenda. Reload the artist list before editing.");
   }
   if (JSON.stringify(before) !== JSON.stringify(current)
@@ -18,12 +29,16 @@ export function updateArtist(latest, original, artistId, fields) {
     throw new Error("This artist was changed by another editor. Your draft is still here. Reload the artist list to review the latest version before saving.");
   }
   const result = structuredClone(latest);
-  const artist = result.artists.find(item => item.id === artistId);
+  let artist = result.artists.find(item => item.id === artistId);
+  if (!artist) {
+    artist = { ...scheduledProfiles(original).find(item => item.id === artistId) };
+    result.artists.push(artist);
+  }
   artist.name = fields.name.trim();
   artist.genre = fields.genre.trim();
   artist.tipUrl = fields.tipUrl.trim() || null;
   artist.links = fields.links.split(/\r?\n/).map(link => link.trim()).filter(Boolean);
-  if (artist.name !== before.name) {
+  if (!before || artist.name !== before.name) {
     for (const set of result.sets) {
       if (set.artistId === artistId) set.name = artist.name;
     }

@@ -76,12 +76,42 @@ const draftFor = artist => ({
   name: artist.name, genre: artist.genre, tipUrl: artist.tipUrl ?? "", links: artist.links.join("\n"),
 });
 
-test("artist desk lists only the 21 scheduled profiles without removing source records", () => {
+test("artist desk lists every scheduled act once, including missing profiles, without changing source records", () => {
+  const snapshot = structuredClone(original);
   const profiles = scheduledProfiles(original);
-  assert.equal(profiles.length, 21);
+  assert.equal(profiles.length, new Set(original.sets.map(set => set.artistId)).size);
+  assert.deepEqual(new Set(profiles.map(artist => artist.id)), new Set(original.sets.map(set => set.artistId)));
   assert.ok(!profiles.some(artist => artist.id === "7th-street"));
-  assert.equal(original.artists.length, 43);
+  assert.deepEqual(original, snapshot);
   assert.ok(profiles.every(artist => original.sets.some(set => set.artistId === artist.id)));
+  const repeated = structuredClone(original);
+  repeated.sets.push(structuredClone(repeated.sets[0]));
+  assert.equal(scheduledProfiles(repeated).length, profiles.length);
+});
+
+test("saving a missing profile creates it with the agenda ID and preserves unrelated edits", () => {
+  const guide = changed(d => { d.artists = d.artists.filter(artist => artist.id !== "bob-stritch"); });
+  const snapshot = structuredClone(guide);
+  const bob = scheduledProfiles(guide).find(artist => artist.id === "bob-stritch");
+  assert.deepEqual(bob, {
+    id: "bob-stritch", name: "Bob Stritch", genre: "Genre to be announced", tipUrl: null, links: [],
+  });
+  const latest = structuredClone(guide);
+  latest.artists[0].genre = "Another organizer's edit";
+  const fields = { ...draftFor(bob), name: "Bob Stritch Updated", genre: "Folk", tipUrl: "https://cash.app/$example-artist" };
+  const updated = updateArtist(latest, guide, bob.id, fields);
+  assert.equal(updated.artists.length, guide.artists.length + 1);
+  assert.deepEqual(updated.artists.at(-1), { ...bob, name: fields.name, genre: fields.genre, tipUrl: fields.tipUrl });
+  assert.equal(updated.artists[0].genre, latest.artists[0].genre);
+  assert.ok(updated.sets.filter(set => set.artistId === bob.id).every(set => set.name === fields.name));
+  assert.deepEqual(guide, snapshot);
+  const concurrent = structuredClone(guide);
+  concurrent.artists.push({ ...bob, genre: "Added by another organizer" });
+  assert.throws(() => updateArtist(concurrent, guide, bob.id, fields), /changed by another editor/);
+  assert.throws(() => updateArtist(guide, concurrent, bob.id, fields), /changed by another editor/);
+  const rescheduled = structuredClone(guide);
+  rescheduled.sets.find(set => set.artistId === bob.id).start += 1;
+  assert.throws(() => updateArtist(rescheduled, guide, bob.id, fields), /changed by another editor/);
 });
 
 test("saving artist details keeps IDs and all other data, and synchronizes agenda names", () => {
