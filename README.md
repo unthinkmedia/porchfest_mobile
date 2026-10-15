@@ -14,6 +14,7 @@ Artists donate their time. Tipping uses a verified-format HTTPS Venmo link when
 one has been supplied; otherwise visitors are directed to the artist's porch tip
 jar. Juke Jams' organizer-provided Venmo is `https://venmo.com/jukejams`.
 Mark P Presti Jr.'s is `https://venmo.com/Mark-Presti-1`.
+Paul Rosevear's is `https://venmo.com/Paul-Rosevear`.
 Missing genres are explicitly
 marked as to be announced, not inferred. The artist directory, its count, and its
 search results include only profiles matching an act on the current agenda.
@@ -42,8 +43,9 @@ directly, because the guide fetches its data.
 
 ## Schedule and privacy
 
-`data.json` is a reviewed public snapshot, not a live connection to the
-registration spreadsheet. **Never commit or publish the workbook:** it contains
+`data.json` is the public guide, editable through the organizer desk or GitHub.
+It is not a live connection to the registration spreadsheet.
+**Never commit or publish the workbook:** it contains
 contact information and internal organizer notes.
 
 To refresh from an organizer-provided XLSX export stored outside this repository:
@@ -65,10 +67,81 @@ provided tipping links after refreshing the snapshot. Map searches use the
 organizers' location names plus Rutherford, NJ; exact porch addresses have not
 been independently verified.
 
+## Organizer desk
+
+Open https://unthinkmedia.github.io/porchfest_mobile/admin/ and sign in with the
+approved `unthinkmedia` GitHub account. Authentication is hosted at
+`https://porchfest-github-auth.rutherford-porchfest.workers.dev`.
+The free, MIT-licensed Decap CMS 3.14.1 bundle is self-hosted in
+`admin/vendor/` with its license; there is no third-party CMS script at login.
+
+The editor manages the artists (including exact Venmo URLs), public links, porches
+and map search addresses, and agenda sets in `data.json`. A draft preview shows
+sets with their times, locations, genres, and tipping information. The event name,
+date, and timezone are fixed for this edition. For times, enter whole minutes
+after midnight Eastern: 11 AM = 660; 1:45 PM = 825; 5:15 PM = 1035.
+
+Keep existing IDs unchanged; when adding an artist or porch, give it a unique
+lowercase ID and use that ID in the agenda. Missing references, duplicate IDs,
+invalid or unsafe URLs, unexpected fields, and overlapping sets on the same porch
+block publishing. Blank Venmo fields become `null`, keeping the tip-jar fallback.
+Only artists on the agenda appear in the public directory.
+
+**Publish** commits to `main`; Pages usually takes about a minute to update.
+Drafts and preview are not live. Avoid editing the same guide simultaneously
+with another organizer, and reload before making a new edit. For rollback, revert
+the relevant data commit in GitHub rather than overwriting unrelated work.
+
+Only public information belongs in this editor. The admin URL and its code are
+public; GitHub authorization, not a hidden URL, controls writing. Authorized
+users retain the underlying repository permissions they have in GitHub.
+
+### One-time Cloudflare + GitHub authentication setup
+
+1. In `auth-worker/`, run `npm ci`, `npx wrangler login --device`, then
+   `npx wrangler deploy`. Select your own Cloudflare account if prompted. This
+   creates a Worker only; no database, paid plan, or custom domain is required.
+   Use a free Workers plan and configure usage limits in your account as needed.
+2. Copy the deployed HTTPS Worker origin (without a trailing slash).
+   In GitHub **Settings > Developer settings > OAuth Apps > New OAuth App**, using
+   the `unthinkmedia` account, register:
+   application name **Rutherford Porchfest Organizer Desk**;
+   homepage `https://unthinkmedia.github.io/porchfest_mobile/admin/`;
+   authorization callback **your exact Worker origin + `/callback`**.
+3. Run `npx wrangler secret put GITHUB_CLIENT_ID` and
+   `npx wrangler secret put GITHUB_CLIENT_SECRET` from `auth-worker/`.
+   Enter the OAuth app's values at the terminal prompts. Never put secrets,
+   access tokens, or a filled `.dev.vars` file in GitHub, browser code, or chat.
+   `.dev.vars.example` is a template only; local `.dev.vars` is ignored.
+4. Set `authBaseUrl` in `admin/settings.json` to the deployed Worker origin,
+   such as `https://porchfest-github-auth.YOUR-SUBDOMAIN.workers.dev`.
+   Visit `/health` on that Worker: it must report that authentication is configured.
+   Commit the public settings change and push to `main`.
+5. Open `/admin/`, choose **Login with GitHub**, and sign in as `unthinkmedia`.
+   Check a harmless draft change and its preview, then publish it. Confirm the
+   commit in GitHub and the resulting public guide before using it at the event.
+
+The OAuth app requests `public_repo`, GitHub's OAuth scope for writing public
+repositories; this is broader than this one repository. Review the GitHub consent
+screen. The Worker additionally restricts login to `ADMIN_LOGINS` (initially
+`unthinkmedia`) and verifies push permission on `unthinkmedia/porchfest_mobile`.
+To add an organizer, grant them GitHub repository write access, add their login
+to the comma-separated `ADMIN_LOGINS` in `auth-worker/wrangler.jsonc`, and redeploy.
+To remove access, remove both their repository access and their allowed login.
+Revoke the OAuth app grant in GitHub to invalidate its existing tokens.
+
+Sign-in uses random short-lived HttpOnly state cookies, PKCE, fixed callback
+paths, and a fixed-origin popup handshake. The OAuth client secret stays in
+Cloudflare. Decap keeps the resulting GitHub access token in browser local
+storage; only use trusted organizer devices, log out when finished, and revoke
+the OAuth grant if a device is lost. No tokens are placed in callback URLs or logs.
+The Worker is an auth bridge, not an artist self-service service: private editing
+links for individual artists are not implemented.
+
 ## Checks
 
 ```sh
-node --test tests/core.test.mjs
+node --test tests/*.test.mjs auth-worker/worker.test.mjs
 python3 -m unittest discover -s tests -p '*_test.py'
 ```
 
@@ -78,6 +151,12 @@ or `msedge` to use an already-installed browser instead of bundled Chromium.
 It checks phone/tablet/desktop layouts,
 time-aware states, all pages, search, maps, Venmo and tip-jar behavior, and loading
 errors. Set `PORCHFEST_ARTIFACTS` to choose a screenshot output directory.
+`tests/admin-browser.py` verifies the setup screen, real CMS login startup,
+draft preview, lossless publishing, and invalid-draft protection using intercepted
+GitHub requests and fake credentials; it never writes to the real repository.
+Run it against the same local HTTP server. Worker unit tests mock GitHub; they
+do not prove a real OAuth app is connected. `cd auth-worker && npx wrangler deploy
+--dry-run` checks the Worker bundle without deploying resources.
 
 ## Publishing
 

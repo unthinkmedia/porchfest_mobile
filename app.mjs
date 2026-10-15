@@ -40,6 +40,7 @@ function intro(eyebrow, title, description) {
 }
 
 function home(state) {
+  const firstSetTime = formatTime(Math.min(...data.sets.map(set => set.start)));
   const status = state.finished ? "That's a wrap. What a day."
     : state.before ? "See you Saturday, October 17."
       : state.current.length ? "The neighborhood is making music."
@@ -47,11 +48,11 @@ function home(state) {
   const current = state.current.length
     ? `<div class="cards">${state.current.map(set => setCard(set, true)).join("")}</div>`
     : `<div class="empty-state"><span aria-hidden="true">&#9835;</span><div><h3>${state.finished ? "Thanks for listening." : state.before ? "The porches are warming up." : "A little break between sets."}</h3>
-      <p>${state.finished ? "You can still discover the artists and send a little love." : state.before ? "Music starts at 11:00 AM on October 17. On festival day, this spot follows the music in real time." : "No scheduled set is playing right now. The next performances are below."}</p></div></div>`;
+      <p>${state.finished ? "You can still discover the artists and send a little love." : state.before ? `Music starts at ${firstSetTime} on October 17. On festival day, this spot follows the music in real time.` : "No scheduled set is playing right now. The next performances are below."}</p></div></div>`;
   return `<section class="hero">
     <div class="hero-copy"><p class="eyebrow">OCTOBER 17, 2026 &middot; RUTHERFORD, NJ</p>
       <h1>Your town.<br>Your <em>soundtrack.</em></h1>
-      <p>One Saturday. Eight porches.<br>A whole neighborhood of good music.</p>
+      <p>One Saturday. ${data.porches.length} porches.<br>A whole neighborhood of good music.</p>
       <a class="button dark-button" href="#agenda">Find your next favorite &#8599;</a>
     </div>
   </section>
@@ -65,7 +66,9 @@ function home(state) {
 
 function agenda(state) {
   const groups = [...new Set(data.sets.map(set => set.start))].sort((a, b) => a - b);
-  return `${intro("THE WHOLE NEIGHBORHOOD, ONE DAY", "The full agenda.", "Saturday, October 17 &middot; 11:00 AM &ndash; 9:30 PM. All times Eastern. Pick a sound, find a porch, stay awhile.")}
+  const first = formatTime(groups[0]);
+  const last = formatTime(Math.max(...data.sets.map(set => set.end)));
+  return `${intro("THE WHOLE NEIGHBORHOOD, ONE DAY", "The full agenda.", `Saturday, October 17 &middot; ${first} &ndash; ${last}. All times Eastern. Pick a sound, find a porch, stay awhile.`)}
     <div class="notice">A free day of music, made possible by artists donating their time. Please bring a little something for the tip jars.</div>
     <div class="agenda">${groups.map((start, index) => {
       const previousEnd = index ? Math.max(...data.sets.filter(set => set.start === groups[index - 1]).map(set => set.end)) : null;

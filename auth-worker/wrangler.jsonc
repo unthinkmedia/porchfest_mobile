@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "porchfest-github-auth",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "vars": {
+    "SITE_ORIGIN": "https://unthinkmedia.github.io",
+    "REPOSITORY": "unthinkmedia/porchfest_mobile",
+    "ADMIN_LOGINS": "unthinkmedia"
+  }
+}
