@@ -13,7 +13,7 @@ with sync_playwright() as p:
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
     page.route("**/admin/settings.json", lambda route: route.fulfill(json={"authBaseUrl": None}))
-    page.goto(f"{BASE}/admin/")
+    page.goto(f"{BASE}/admin/guide.html")
     expect(page.locator("#admin-message")).to_contain_text("GitHub sign-in is not connected yet")
     assert page.get_by_role("button", name="Login with GitHub").count() == 0
     page.route("**/admin/settings.json", lambda route: route.fulfill(

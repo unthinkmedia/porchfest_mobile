@@ -7,16 +7,74 @@
     <meta name="referrer" content="no-referrer">
     <title>Organizer desk | Rutherford Porchfest</title>
     <link rel="stylesheet" href="../styles.css">
-    <script>window.CMS_MANUAL_INIT = true;</script>
-    <script type="module" src="./editor.mjs"></script>
+    <link rel="stylesheet" href="./desk.css">
+    <script type="module" src="./desk.mjs"></script>
   </head>
   <body>
-    <section id="admin-status" class="page-intro" style="margin: 0 auto; padding: 48px 24px" role="status">
-      <p class="eyebrow">RUTHERFORD PORCHFEST / ORGANIZERS</p>
-      <h1>The organizer desk.</h1>
-      <p id="admin-message">Checking the editor connection...</p>
-      <p><a href="../">Back to the public guide</a></p>
-    </section>
+    <header class="desk-header">
+      <a class="brand" href="./"><span class="brand-icon" aria-hidden="true">&#9835;</span><span>RUTHERFORD PORCHFEST<strong>Organizer desk</strong></span></a>
+      <nav aria-label="Organizer navigation">
+        <a href="../">Public guide &#8599;</a>
+        <a href="./guide.html" id="guide-link" hidden>Agenda &amp; porches</a>
+        <button type="button" id="logout" hidden>Log out</button>
+      </nav>
+    </header>
+    <main class="desk-main">
+      <section class="desk-intro">
+        <p class="eyebrow">OCTOBER 17, 2026 / BEHIND THE MUSIC</p>
+        <h1>The <em>artist</em> desk.</h1>
+        <p>Choose an artist. Update their details. Save to publish.</p>
+      </section>
+      <section id="sign-in" class="desk-sign-in" aria-labelledby="sign-in-title">
+        <h2 id="sign-in-title">For the organizers.</h2>
+        <p>Sign in with your approved GitHub account to edit the artists on the agenda.</p>
+        <button class="button dark-button" id="login" type="button" disabled>Login with GitHub</button>
+      </section>
+      <p id="desk-status" role="status" aria-live="polite">Checking the editor connection...</p>
+      <p id="desk-error" role="alert" hidden></p>
+      <section id="workspace" class="desk-workspace" aria-label="Artist editor" hidden>
+        <aside class="artist-directory" aria-labelledby="artist-list-heading">
+          <div class="directory-heading"><h2 id="artist-list-heading">The lineup</h2><span id="profile-count"></span></div>
+          <label class="sr-only" for="artist-filter">Find a scheduled artist</label>
+          <input id="artist-filter" type="search" placeholder="Find an artist..." autocomplete="off">
+          <div id="profile-list" class="profile-list"></div>
+          <p id="empty-search" class="small-note" hidden>No artists match that search.</p>
+          <button type="button" id="reload-artists" class="reload-button">Reload artist list</button>
+        </aside>
+        <section class="artist-detail" aria-label="Artist details">
+          <div id="choose-artist">
+            <p class="eyebrow">THE PEOPLE MAKING THE MUSIC</p>
+            <h2 id="detail-heading" tabindex="-1">Pick a name.<br>Make it theirs.</h2>
+            <p>Select an artist from the list to edit their name, genre, donation link, and public links.</p>
+            <p class="small-note">Only artist profiles on the agenda appear here.</p>
+          </div>
+          <form id="artist-form" hidden>
+            <p class="eyebrow">ARTIST DETAILS</p>
+            <h2 id="artist-heading" tabindex="-1"></h2>
+            <p id="artist-slots" class="detail-slots"></p>
+            <fieldset id="artist-fields">
+              <label for="artist-name">Artist name</label>
+              <input id="artist-name" name="name" required>
+              <p class="field-note">Also updates this artist's name in the agenda when you save.</p>
+              <label for="artist-genre">Genre</label>
+              <input id="artist-genre" name="genre" required>
+              <label for="artist-tip">Donation / payment link <span>(optional)</span></label>
+              <input id="artist-tip" name="tipUrl" type="url" placeholder="https://cash.app/$artist">
+              <p class="field-note">Artist-provided HTTPS link for Venmo, Cash App, PayPal, Zelle, or another service. No phone numbers, emails, or bank details.</p>
+              <label for="artist-links">Music &amp; social links <span>(optional)</span></label>
+              <textarea id="artist-links" name="links" rows="4" placeholder="One complete URL per line"></textarea>
+              <p class="field-note">Public links only, one URL per line.</p>
+            </fieldset>
+            <div class="detail-actions">
+              <button class="button dark-button" id="save-artist" type="submit" disabled>Save changes</button>
+              <button class="button cancel-button" id="cancel-edit" type="button" disabled>Cancel changes</button>
+              <span id="draft-status" role="status">No unsaved changes</span>
+            </div>
+            <p class="small-note">Save commits to GitHub. The public guide updates after GitHub Pages deploys, usually in about a minute.</p>
+          </form>
+        </section>
+      </section>
+    </main>
     <noscript><p>Enable JavaScript to use the editor.</p></noscript>
   </body>
 </html>

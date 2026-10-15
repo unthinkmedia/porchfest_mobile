@@ -72,20 +72,31 @@ been independently verified.
 Open https://unthinkmedia.github.io/porchfest_mobile/admin/ and sign in with the
 approved `unthinkmedia` GitHub account. Authentication is hosted at
 `https://porchfest-github-auth.rutherford-porchfest.workers.dev`.
-The free, MIT-licensed Decap CMS 3.14.1 bundle is self-hosted in
-`admin/vendor/` with its license; there is no third-party CMS script at login.
+The main desk is a lightweight, self-hosted artist editor:
 
-The editor manages the artists (including payment/tipping URLs), public links, porches
-and map search addresses, and agenda sets in `data.json`. A draft preview shows
-sets with their times, locations, genres, and tipping information. The event name,
-date, and timezone are fixed for this edition. For times, enter whole minutes
-after midnight Eastern: 11 AM = 660; 1:45 PM = 825; 5:15 PM = 1035.
+1. Choose a name from **The lineup**. Only the 21 artist profiles currently
+   linked to the agenda are listed, matching the public artist directory.
+2. Edit the artist name, genre, **Donation / payment link**, or public music and
+   social links in the details panel. IDs are kept unchanged automatically.
+3. Click **Save changes**. This commits directly to `main`; GitHub Pages usually
+   updates the public guide in about a minute. Renaming an artist also updates
+   their display name in every linked agenda set.
 
-Keep existing IDs unchanged; when adding an artist or porch, give it a unique
-lowercase ID and use that ID in the agenda. Missing references, duplicate IDs,
-invalid or unsafe URLs, unexpected fields, and overlapping sets on the same porch
-block publishing. Blank payment fields become `null`, keeping the tip-jar fallback.
-Only artists on the agenda appear in the public directory.
+Unscheduled profiles remain in the source JSON but are not shown in the artist
+desk. Scheduled community acts without artist profiles are not invented.
+Blank payment fields become `null`, keeping the tip-jar fallback.
+Switching artists, cancelling, or leaving with a draft asks before discarding it.
+The desk reads the latest guide before saving, preserves unrelated edits, and
+blocks a save if that artist or their agenda entries changed in the meantime.
+Failed saves keep the draft visible; reload the list to review conflicting edits.
+
+**Agenda & porches** opens the advanced editor at `/admin/guide.html` for schedule,
+location, and profile management. It uses the free, MIT-licensed Decap CMS 3.14.1
+bundle self-hosted in `admin/vendor/` with its license. The advanced editor retains
+the full source profiles and draft schedule preview. Event identity is fixed.
+Times are whole minutes after midnight Eastern: 11 AM = 660; 1:45 PM = 825;
+5:15 PM = 1035. Keep existing IDs unchanged. Missing references, duplicate IDs,
+invalid URLs, unexpected fields, and overlapping sets on one porch block saving.
 
 Each artist currently has one primary payment link. Venmo, Cash App, PayPal, and
 recognized Zelle domains receive service-specific button labels; other HTTPS
@@ -95,10 +106,10 @@ shareable HTTPS link; a raw phone number or email is not a link and is not
 published. Never enter bank account details. Payments happen on the provider's
 site or app, not on this website.
 
-**Publish** commits to `main`; Pages usually takes about a minute to update.
-Drafts and preview are not live. Avoid editing the same guide simultaneously
-with another organizer, and reload before making a new edit. For rollback, revert
-the relevant data commit in GitHub rather than overwriting unrelated work.
+The advanced editor uses **Publish > Publish now** to commit to `main`.
+Drafts and preview are not live. Avoid using both editors on the same artist
+simultaneously. For rollback, revert the relevant data commit in GitHub rather
+than overwriting unrelated work.
 
 Only public information belongs in this editor. The admin URL and its code are
 public; GitHub authorization, not a hidden URL, controls writing. Authorized
@@ -129,7 +140,7 @@ users retain the underlying repository permissions they have in GitHub.
    Visit `/health` on that Worker: it must report that authentication is configured.
    Commit the public settings change and push to `main`.
 5. Open `/admin/`, choose **Login with GitHub**, and sign in as `unthinkmedia`.
-   Check a harmless draft change and its preview, then publish it. Confirm the
+   Choose an artist, check a harmless draft change, then save it. Confirm the
    commit in GitHub and the resulting public guide before using it at the event.
 
 The OAuth app requests `public_repo`, GitHub's OAuth scope for writing public
@@ -143,8 +154,8 @@ Revoke the OAuth app grant in GitHub to invalidate its existing tokens.
 
 Sign-in uses random short-lived HttpOnly state cookies, PKCE, fixed callback
 paths, and a fixed-origin popup handshake. The OAuth client secret stays in
-Cloudflare. Decap keeps the resulting GitHub access token in browser local
-storage; only use trusted organizer devices, log out when finished, and revoke
+Cloudflare. The artist desk and Decap share the resulting GitHub access token in
+browser local storage; only use trusted organizer devices, log out when finished, and revoke
 the OAuth grant if a device is lost. No tokens are placed in callback URLs or logs.
 The Worker is an auth bridge, not an artist self-service service: private editing
 links for individual artists are not implemented.
@@ -162,7 +173,11 @@ or `msedge` to use an already-installed browser instead of bundled Chromium.
 It checks phone/tablet/desktop layouts,
 time-aware states, all pages, search, maps, payment-service labels and tip-jar behavior, and loading
 errors. Set `PORCHFEST_ARTIFACTS` to choose a screenshot output directory.
-`tests/admin-browser.py` verifies the setup screen, real CMS login startup,
+`tests/artist-desk-browser.py` verifies the main artist desk: OAuth popup handoff,
+21-only list, details, exact saves, agenda-name synchronization, unsaved changes,
+concurrent-edit protection, authentication errors, and responsive layouts.
+It intercepts every GitHub API request and never makes a real repository write.
+`tests/admin-browser.py` verifies the advanced editor setup screen, real CMS login startup,
 draft preview, lossless publishing, and invalid-draft protection using intercepted
 GitHub requests and fake credentials; it never writes to the real repository.
 Run it against the same local HTTP server. Worker unit tests mock GitHub; they
