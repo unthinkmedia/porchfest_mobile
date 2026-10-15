@@ -81,7 +81,9 @@ approved `unthinkmedia` GitHub account. Authentication is hosted at
 The main desk is a lightweight, self-hosted artist editor:
 
 1. Choose a name from **The lineup**. Every act on the agenda is listed once,
-   including acts that do not yet have an artist profile.
+   including acts that do not yet have an artist profile, except the two
+   announcements/Rutherford's Got Talent entries. Those remain on the public
+   agenda and can be edited through **Agenda & porches**.
 2. Edit the artist name, genre, **Donation / payment link**, or public music and
    social links in the details panel. IDs are kept unchanged automatically.
 3. Click **Save changes**. This commits directly to `main`; GitHub Pages usually

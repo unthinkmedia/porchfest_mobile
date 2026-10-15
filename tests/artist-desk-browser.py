@@ -11,7 +11,8 @@ BASE = "http://127.0.0.1:8765"
 AUTH = "https://porchfest-auth.example.workers.dev"
 original = json.loads((Path(__file__).resolve().parents[1] / "data.json").read_text())
 original["artists"] = [artist for artist in original["artists"] if artist["id"] != "bob-stritch"]
-scheduled_count = len({entry["artistId"] for entry in original["sets"]})
+hidden_ids = {"announcements-rutherford-s-got-talent", "rutherford-s-got-talent"}
+scheduled_count = len({entry["artistId"] for entry in original["sets"]} - hidden_ids)
 remote = copy.deepcopy(original)
 revision = 1
 writes = []
@@ -84,6 +85,9 @@ with sync_playwright() as p:
     expect(page.locator("#workspace")).to_be_visible(timeout=15000)
     expect(page.locator("#profile-count")).to_have_text(f"{scheduled_count} artists")
     expect(page.locator(".profile-button")).to_have_count(scheduled_count)
+    for artist_id in hidden_ids:
+        expect(page.locator(f'[data-artist="{artist_id}"]')).to_have_count(0)
+        assert any(entry["artistId"] == artist_id for entry in remote["sets"])
     assert not page.locator('[data-artist="7th-street"]').count()
     expect(page.locator("#artist-form")).to_be_hidden()
     page.get_by_label("Find a scheduled artist").fill("juke")

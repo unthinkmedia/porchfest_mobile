@@ -76,11 +76,20 @@ const draftFor = artist => ({
   name: artist.name, genre: artist.genre, tipUrl: artist.tipUrl ?? "", links: artist.links.join("\n"),
 });
 
-test("artist desk lists every scheduled act once, including missing profiles, without changing source records", () => {
+test("artist desk lists scheduled artists once but keeps community entries only in the agenda", () => {
   const snapshot = structuredClone(original);
   const profiles = scheduledProfiles(original);
-  assert.equal(profiles.length, new Set(original.sets.map(set => set.artistId)).size);
-  assert.deepEqual(new Set(profiles.map(artist => artist.id)), new Set(original.sets.map(set => set.artistId)));
+  const hiddenIds = ["announcements-rutherford-s-got-talent", "rutherford-s-got-talent"];
+  const expectedIds = new Set(original.sets.map(set => set.artistId).filter(id => !hiddenIds.includes(id)));
+  assert.equal(profiles.length, expectedIds.size);
+  assert.deepEqual(new Set(profiles.map(artist => artist.id)), expectedIds);
+  for (const id of hiddenIds) {
+    assert.ok(original.sets.some(set => set.artistId === id));
+    assert.throws(() => updateArtist(original, original, id, {}), /not editable in the artist desk/);
+    const withProfile = structuredClone(original);
+    withProfile.artists.push({ id, name: "Community entry", genre: "Community showcase", tipUrl: null, links: [] });
+    assert.ok(!scheduledProfiles(withProfile).some(artist => artist.id === id));
+  }
   assert.ok(!profiles.some(artist => artist.id === "7th-street"));
   assert.deepEqual(original, snapshot);
   assert.ok(profiles.every(artist => original.sets.some(set => set.artistId === artist.id)));
