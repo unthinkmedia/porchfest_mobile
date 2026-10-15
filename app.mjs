@@ -10,6 +10,7 @@ const escape = value => String(value).replace(/[&<>"']/g, character => ({
 })[character]);
 const timeRange = set => `${formatTime(set.start)} &ndash; ${formatTime(set.end)}`;
 const artistFor = set => data.artists.find(artist => artist.id === set.artistId);
+const scheduledArtists = () => data.artists.filter(artist => data.sets.some(set => set.artistId === artist.id));
 const porchFor = set => data.porches.find(porch => porch.id === set.porchId);
 const external = (url, label, className = "") =>
   `<a class="${className}" href="${escape(url)}" target="_blank" rel="noopener noreferrer">${label}<span class="sr-only"> (opens in a new tab)</span></a>`;
@@ -92,17 +93,18 @@ function artistCard(artist) {
   return `<article class="artist-card" data-artist="${escape(artist.id)}">
     <div class="artist-monogram" aria-hidden="true">${escape(artist.name.replace(/^the /i, "").slice(0, 1))}</div>
     <div class="artist-details"><h2>${escape(artist.name)}</h2><p class="genre">${escape(artist.genre)}</p>
-    <p class="artist-slot">${sets.length ? sets.map(set => `${formatTime(set.start)} &middot; ${escape(porchFor(set).name)}`).join("<br>") : "Shared an artist profile &middot; Not listed on the current schedule"}</p>
+    <p class="artist-slot">${sets.map(set => `${formatTime(set.start)} &middot; ${escape(porchFor(set).name)}`).join("<br>")}</p>
     <div class="artist-links">${artist.links.length ? artist.links.map(url => external(url, `${escape(linkLabel(url))} &#8599;`)).join("") : '<span class="small-note">No direct music or social links shared yet.</span>'}</div>
     </div></article>`;
 }
 
 function artists() {
-  return `${intro("DISCOVER SOMEONE GOOD", "Meet the artists.", "A directory of the artists who shared their information, including acts not listed on the current agenda. Follow them, listen again, and keep the neighborhood's music going.")}
+  const lineup = scheduledArtists();
+  return `${intro("DISCOVER SOMEONE GOOD", "Meet the artists.", "Meet the artists on the agenda who shared their information. Follow them, listen again, and keep the neighborhood's music going.")}
     <label class="search-label" for="artist-search">Find an artist or genre</label>
     <input id="artist-search" class="search" type="search" placeholder="Try a band name, rock, folk..." autocomplete="off">
-    <p id="artist-count" class="small-note" role="status">${data.artists.length} artist profiles</p>
-    <div class="artist-grid" id="artist-list">${data.artists.map(artistCard).join("")}</div>
+    <p id="artist-count" class="small-note" role="status">${lineup.length} artist profile${lineup.length === 1 ? "" : "s"}</p>
+    <div class="artist-grid" id="artist-list">${lineup.map(artistCard).join("")}</div>
     <p id="no-artists" class="empty-copy" hidden>No artists match that search. Try another name or genre.</p>`;
 }
 
@@ -123,7 +125,7 @@ function wireSearch() {
   input.addEventListener("input", () => {
     const query = input.value.trim().toLocaleLowerCase();
     let count = 0;
-    for (const artist of data.artists) {
+    for (const artist of scheduledArtists()) {
       const match = `${artist.name} ${artist.genre}`.toLocaleLowerCase().includes(query);
       document.querySelector(`[data-artist="${artist.id}"]`).hidden = !match;
       if (match) count++;
