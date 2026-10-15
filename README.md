@@ -120,6 +120,9 @@ users retain the underlying repository permissions they have in GitHub.
    `npx wrangler secret put GITHUB_CLIENT_SECRET` from `auth-worker/`.
    Enter the OAuth app's values at the terminal prompts. Never put secrets,
    access tokens, or a filled `.dev.vars` file in GitHub, browser code, or chat.
+   **Client ID** is the identifier labeled Client ID in the GitHub app settings,
+   not the homepage or callback URL. `/health` checks configuration presence and
+   format; only a real sign-in verifies that the ID and secret match the OAuth app.
    `.dev.vars.example` is a template only; local `.dev.vars` is ignored.
 4. Set `authBaseUrl` in `admin/settings.json` to the deployed Worker origin,
    such as `https://porchfest-github-auth.YOUR-SUBDOMAIN.workers.dev`.

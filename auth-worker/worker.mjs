@@ -21,7 +21,7 @@ function config(env) {
   const origin = new URL(env.SITE_ORIGIN);
   if (origin.protocol !== "https:" || origin.origin !== env.SITE_ORIGIN
     || !/^[\w.-]+\/[\w.-]+$/.test(env.REPOSITORY ?? "")
-    || !env.GITHUB_CLIENT_ID || !env.GITHUB_CLIENT_SECRET
+    || !/^[A-Za-z0-9_-]+$/.test(env.GITHUB_CLIENT_ID ?? "") || !env.GITHUB_CLIENT_SECRET
     || !env.ADMIN_LOGINS?.trim()) {
     throw new Error("Authentication service configuration is incomplete.");
   }

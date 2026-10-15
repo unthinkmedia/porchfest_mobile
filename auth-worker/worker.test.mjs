@@ -124,3 +124,14 @@ test("fail closed on missing configuration and unsupported routes or methods", a
   assert.equal((await handleRequest(new Request("http://localhost/auth"), env)).status, 400);
   assert.equal((await handleRequest(new Request(`${base}/health`), env)).status, 200);
 });
+
+test("reject a callback URL or other malformed value saved as the GitHub Client ID", async () => {
+  for (const id of [`${base}/callback`, " test-client-id ", "", "client?id=example"]) {
+    const invalidEnv = { ...env, GITHUB_CLIENT_ID: id };
+    for (const path of ["/health", "/auth?provider=github&site_id=unthinkmedia.github.io"]) {
+      const response = await handleRequest(new Request(`${base}${path}`), invalidEnv);
+      assert.equal(response.status, 503);
+      assert.equal(response.headers.get("Location"), null);
+    }
+  }
+});
