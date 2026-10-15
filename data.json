@@ -1,0 +1,678 @@
+{
+  "event": {
+    "name": "Rutherford Porchfest",
+    "date": "2026-10-17",
+    "timeZone": "America/New_York"
+  },
+  "porches": [
+    {
+      "id": "porch-1",
+      "name": "Felician",
+      "region": "Startup",
+      "mapQuery": "Felician University, Rutherford, NJ"
+    },
+    {
+      "id": "porch-2",
+      "name": "155 Home",
+      "region": "Region A",
+      "mapQuery": "155 Home, Rutherford, NJ"
+    },
+    {
+      "id": "porch-3",
+      "name": "48 Washington",
+      "region": "Region A",
+      "mapQuery": "48 Washington, Rutherford, NJ"
+    },
+    {
+      "id": "porch-4",
+      "name": "135 Mountain Way",
+      "region": "Region C",
+      "mapQuery": "135 Mountain Way, Rutherford, NJ"
+    },
+    {
+      "id": "porch-5",
+      "name": "237 Springfield",
+      "region": "Region C",
+      "mapQuery": "237 Springfield, Rutherford, NJ"
+    },
+    {
+      "id": "porch-6",
+      "name": "281 Donaldson",
+      "region": "Region D",
+      "mapQuery": "281 Donaldson, Rutherford, NJ"
+    },
+    {
+      "id": "porch-7",
+      "name": "30 Garfield",
+      "region": "Region D",
+      "mapQuery": "30 Garfield, Rutherford, NJ"
+    },
+    {
+      "id": "porch-8",
+      "name": "50 Summit Cross",
+      "region": "Final Porch",
+      "mapQuery": "50 Summit Cross, Rutherford, NJ"
+    }
+  ],
+  "sets": [
+    {
+      "id": "set-1",
+      "artistId": "sianna-the-rosebuds",
+      "name": "Sianna & The Rosebuds",
+      "porchId": "porch-1",
+      "start": 660,
+      "end": 690
+    },
+    {
+      "id": "set-2",
+      "artistId": "untwisted",
+      "name": "unTwisted",
+      "porchId": "porch-1",
+      "start": 700,
+      "end": 730
+    },
+    {
+      "id": "set-3",
+      "artistId": "school-of-rock-carlstadt-house-band",
+      "name": "School of Rock Carlstadt House Band",
+      "porchId": "porch-1",
+      "start": 740,
+      "end": 770
+    },
+    {
+      "id": "set-4",
+      "artistId": "this-just-kim",
+      "name": "this just kim",
+      "porchId": "porch-2",
+      "start": 785,
+      "end": 815
+    },
+    {
+      "id": "set-5",
+      "artistId": "rory-d-lasnow",
+      "name": "Rory D'Lasnow",
+      "porchId": "porch-2",
+      "start": 825,
+      "end": 855
+    },
+    {
+      "id": "set-6",
+      "artistId": "bob-stritch",
+      "name": "Bob Stritch",
+      "porchId": "porch-2",
+      "start": 865,
+      "end": 895
+    },
+    {
+      "id": "set-7",
+      "artistId": "joe-frame-solo-guitar",
+      "name": "Joe Frame - solo guitar",
+      "porchId": "porch-3",
+      "start": 785,
+      "end": 815
+    },
+    {
+      "id": "set-8",
+      "artistId": "mark-p-presti-jr",
+      "name": "Mark P Presti Jr.",
+      "porchId": "porch-3",
+      "start": 825,
+      "end": 855
+    },
+    {
+      "id": "set-9",
+      "artistId": "paul-rosevear",
+      "name": "Paul Rosevear",
+      "porchId": "porch-3",
+      "start": 865,
+      "end": 895
+    },
+    {
+      "id": "set-10",
+      "artistId": "foggy-family-foggy-minded-boys-and-foggettes",
+      "name": "Foggy Family (Foggy Minded Boys and Foggettes)",
+      "porchId": "porch-4",
+      "start": 910,
+      "end": 940
+    },
+    {
+      "id": "set-11",
+      "artistId": "loretta-hagen",
+      "name": "Loretta Hagen",
+      "porchId": "porch-4",
+      "start": 950,
+      "end": 980
+    },
+    {
+      "id": "set-12",
+      "artistId": "cincere",
+      "name": "Cincere",
+      "porchId": "porch-4",
+      "start": 990,
+      "end": 1020
+    },
+    {
+      "id": "set-13",
+      "artistId": "the-baddies",
+      "name": "The Baddies",
+      "porchId": "porch-5",
+      "start": 910,
+      "end": 940
+    },
+    {
+      "id": "set-14",
+      "artistId": "fretless",
+      "name": "Fretless",
+      "porchId": "porch-5",
+      "start": 950,
+      "end": 980
+    },
+    {
+      "id": "set-15",
+      "artistId": "rhodora",
+      "name": "Rhodora",
+      "porchId": "porch-5",
+      "start": 990,
+      "end": 1020
+    },
+    {
+      "id": "set-16",
+      "artistId": "juke-jams",
+      "name": "Juke Jams",
+      "porchId": "porch-6",
+      "start": 1035,
+      "end": 1065
+    },
+    {
+      "id": "set-17",
+      "artistId": "project-riot",
+      "name": "Project Riot",
+      "porchId": "porch-6",
+      "start": 1075,
+      "end": 1105
+    },
+    {
+      "id": "set-18",
+      "artistId": "the-non-essentials",
+      "name": "The Non-Essentials",
+      "porchId": "porch-6",
+      "start": 1115,
+      "end": 1145
+    },
+    {
+      "id": "set-19",
+      "artistId": "willie-nillie-nelson",
+      "name": "Willie Nillie Nelson",
+      "porchId": "porch-7",
+      "start": 1035,
+      "end": 1065
+    },
+    {
+      "id": "set-20",
+      "artistId": "the-hungry-end",
+      "name": "The Hungry End",
+      "porchId": "porch-7",
+      "start": 1075,
+      "end": 1105
+    },
+    {
+      "id": "set-21",
+      "artistId": "val-kinzler-band",
+      "name": "Val kinzler band",
+      "porchId": "porch-7",
+      "start": 1115,
+      "end": 1145
+    },
+    {
+      "id": "set-22",
+      "artistId": "announcements-rutherford-s-got-talent",
+      "name": "Announcements & Rutherford's Got Talent",
+      "porchId": "porch-8",
+      "start": 1160,
+      "end": 1185
+    },
+    {
+      "id": "set-23",
+      "artistId": "ruby-bones",
+      "name": "Ruby Bones",
+      "porchId": "porch-8",
+      "start": 1185,
+      "end": 1230
+    },
+    {
+      "id": "set-24",
+      "artistId": "rutherford-s-got-talent",
+      "name": "Rutherford's Got Talent",
+      "porchId": "porch-8",
+      "start": 1230,
+      "end": 1245
+    },
+    {
+      "id": "set-25",
+      "artistId": "the-big-happy",
+      "name": "The Big Happy",
+      "porchId": "porch-8",
+      "start": 1245,
+      "end": 1290
+    }
+  ],
+  "artists": [
+    {
+      "id": "7th-street",
+      "name": "7th Street",
+      "genre": "hard rock (classic/alt)",
+      "links": [
+        "https://youtu.be/0vv0LHc8514?is=_eU8Wt8xNQtTh_oB",
+        "https://www.instagram.com/7th.streetband/"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "aj-scaff",
+      "name": "AJ Scaff",
+      "genre": "Rock",
+      "links": [
+        "https://youtu.be/pKw4dXNRp3g",
+        "https://www.instagram.com/aj_scaff__andthe_bandoles"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "bist",
+      "name": "Bist",
+      "genre": "Indie rock",
+      "links": [
+        "https://youtu.be/VDQweom3D8I?is=e6j-zixZ-qVYaMIH",
+        "https://www.instagram.com/bist_band/"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "bree-testa",
+      "name": "Bree Testa",
+      "genre": "Hard Rock",
+      "links": [
+        "https://drive.google.com/file/d/1fihq45ChUD8BjUN3ZTOWXfjTuLUVHejI/view?usp=drivesdk",
+        "https://www.instagram.com/BreeTRocks/"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "charm-fiction-duo-noon",
+      "name": "Charm & Fiction Duo (>noon)",
+      "genre": "blues, jazz, soul, pop, latin, original songs",
+      "links": [
+        "https://www.facebook.com/charmandfiction",
+        "https://www.youtube.com/watch?v=OCz52nOLRQw",
+        "https://www.youtube.com/watch?v=PzyHP6tnFh4",
+        "https://www.youtube.com/watch?v=w1Ey7X9dOSg"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "chix-appeal",
+      "name": "Chix Appeal",
+      "genre": "Rock",
+      "links": [
+        "https://drive.google.com/file/d/1j72wxcqA_ZDbcZSU4wSpdkampDVSw57P/view?usp=drivesdk",
+        "https://drive.google.com/file/d/13SHIaHuKaqBzPiqrvqijFlbNGKrYQ8pd/view?usp=drivesdk",
+        "https://drive.google.com/file/d/1yAx0exVM2nF8oajYy3_OviqVmQeBQseb/view?usp=drivesdk",
+        "https://drive.google.com/file/d/1OJdd5K5elACIoafLNX7-6TTPaAwpXx3W/view?usp=drivesdk",
+        "https://www.instagram.com/chixappeal/"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "cincere",
+      "name": "Cincere",
+      "genre": "Genre to be announced",
+      "links": [],
+      "tipUrl": null
+    },
+    {
+      "id": "dan-ex-machina",
+      "name": "Dan Ex Machina",
+      "genre": "90s-style alternative rock",
+      "links": [
+        "https://www.youtube.com/watch?v=dte-12TH-Ug",
+        "https://linktr.ee/danexmachina"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "dennis-king",
+      "name": "Dennis King",
+      "genre": "indie folk",
+      "links": [
+        "https://www.instagram.com/denniskingwashere/"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "engineers",
+      "name": "ENGINEERS",
+      "genre": "Indie Pop",
+      "links": [
+        "https://www.youtube.com/watch?v=xCr76C47sts&list=PLevMXXJLE2og",
+        "https://engineers-music.bandcamp.com/",
+        "https://www.instagram.com/engineers_music/",
+        "https://www.facebook.com/engineersmusic",
+        "https://music.bandcamp.com/"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "foggy-family-foggy-minded-boys-and-foggettes",
+      "name": "Foggy Family (Foggy Minded Boys and Foggettes)",
+      "genre": "Bluegrass, country, comedy, folk, pop",
+      "links": [
+        "https://www.facebook.com/reel/1439401781348491"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "foul-play",
+      "name": "Foul Play",
+      "genre": "Rock/metal",
+      "links": [
+        "https://music.apple.com/us/album/to-be-human/1851841512?i=1851841513",
+        "https://Foulplay.band"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "fretless",
+      "name": "Fretless",
+      "genre": "Alternative Rock",
+      "links": [
+        "https://www.youtube.com/@fretless-Rutherford",
+        "https://www.instagram.com/fretless/",
+        "https://www.instagram.com/fretless_rutherford/"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "glenn-garr-the-last-chances",
+      "name": "Glenn Garr & The Last Chances",
+      "genre": "Alternative",
+      "links": [
+        "https://www.youtube.com/watch?v=G7ARWkyeJfE",
+        "https://www.facebook.com/search/top?q=glenn%20garr%20%26%20the%20last%20chances"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "goats-yelling",
+      "name": "Goats Yelling",
+      "genre": "Hard Rock, grunge, alternative and classic rock cover band",
+      "links": [
+        "https://www.youtube.com/@goatsyellingband",
+        "https://www.facebook.com/profile.php?id=100093150965860",
+        "https://www.instagram.com/goats_yelling_band/",
+        "https://www.instagram.com/goatsyellingband/"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "in-my-basement",
+      "name": "In My Basement",
+      "genre": "Rock/Indie Rock",
+      "links": [
+        "https://www.instagram.com/reel/DYBCyGxSUts/?igsh=MXVkODdtMmc2Y3dqZA=="
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "jasmine-tea-jasminemusic-com",
+      "name": "Jasmine Tea. (Jasminemusic.com)",
+      "genre": "Singer/songwriter",
+      "links": [
+        "http://jasmineteamusic.com"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "joe-frame-solo-guitar",
+      "name": "Joe Frame - solo guitar",
+      "genre": "Solo guitar- Light Classical, Brazilian Jazz, Great American Songbook",
+      "links": [
+        "https://youtu.be/WezVSAB6A8o?feature=shared"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "juke-jams",
+      "name": "Juke Jams",
+      "genre": "Pop-rock, Party hits, Classic rock, Alternative rock, Modern pop",
+      "links": [
+        "https://youtu.be/yw2qUhlkyIw"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "loretta-hagen",
+      "name": "Loretta Hagen",
+      "genre": "Folk/Americana/country",
+      "links": [
+        "https://youtu.be/XLoqLAVxrkM",
+        "https://www.facebook.com/loretta.hagen2",
+        "https://Lorettahagen.com"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "mark-p-presti-jr",
+      "name": "Mark P Presti Jr.",
+      "genre": "Hard Rock - Performing Acoustic",
+      "links": [
+        "https://markpprestijr.bandcamp.com/album/all-the-rest-is-darkness-2"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "mia-soleil-sanchez",
+      "name": "Mia Soleil Sanchez",
+      "genre": "Pop and classics",
+      "links": [],
+      "tipUrl": null
+    },
+    {
+      "id": "paul-rosevear",
+      "name": "Paul Rosevear",
+      "genre": "Singer songwriter",
+      "links": [
+        "https://www.instagram.com/paullyro/"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "project-riot",
+      "name": "Project Riot",
+      "genre": "Rock",
+      "links": [
+        "https://www.instagram.com/p/DYdVNBIKiAQ/",
+        "https://www.instagram.com/projectriotnj"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "rhodora",
+      "name": "Rhodora",
+      "genre": "Alternative rock",
+      "links": [
+        "https://www.instagram.com/rhodora.band/"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "rory-d-lasnow",
+      "name": "Rory D'Lasnow",
+      "genre": "Singer-Songwriter",
+      "links": [
+        "https://www.youtube.com/watch?v=_REY8wSZ0Ws",
+        "https://instagram.com/rorydlasnow",
+        "https://facebook.com/rorydlasnowmusic",
+        "https://tiktok.com/@rorydlasnow"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "ruby-bones",
+      "name": "Ruby Bones",
+      "genre": "Indie Rock",
+      "links": [
+        "https://www.instagram.com/reel/DblqvNmRNh_/?igsh=M2l6YmgwOWsyazU2",
+        "http://instagram.com/rubybonesband"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "rusty-monks",
+      "name": "Rusty Monks",
+      "genre": "Groovy Horn-driven funk",
+      "links": [],
+      "tipUrl": null
+    },
+    {
+      "id": "school-of-rock-carlstadt-house-band",
+      "name": "School of Rock Carlstadt House Band",
+      "genre": "Cover Band",
+      "links": [
+        "https://youtu.be/VClmJgIf7Hg?si=nckHHZ_4qWvHIL6k",
+        "https://linktr.ee/sorcarlstadt"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "sianna-the-rosebuds",
+      "name": "Sianna & The Rosebuds",
+      "genre": "Pop/Indie/Rock",
+      "links": [
+        "https://www.tiktok.com/t/ZP8ceEGj3/"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "stay-tuned",
+      "name": "Stay Tuned",
+      "genre": "Garage Pop",
+      "links": [
+        "https://youtu.be/gzMMQkht8r8?si=5eMRUviJrmIRCLDt"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "the-baddies",
+      "name": "The Baddies",
+      "genre": "Pop/Punk",
+      "links": [
+        "https://www.youtube.com/@The_Rutherford_Baddies",
+        "https://www.instagram.com/The_Rutherford_Baddies/",
+        "https://www.instagram.com/thebaddiesmusic/"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "the-band-ashley",
+      "name": "The Band Ashley",
+      "genre": "Country",
+      "links": [
+        "https://www.instagram.com/thebandashley/"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "the-big-happy",
+      "name": "The Big Happy",
+      "genre": "Alrernative Rock Reggea / Hip Hop / Jam",
+      "links": [
+        "https://youtu.be/urWOREL4g6g?si=Ac2-4aLxRgxfgH59"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "the-bottom-most",
+      "name": "The Bottom Most",
+      "genre": "Alt-Rock",
+      "links": [],
+      "tipUrl": null
+    },
+    {
+      "id": "the-burrhead-ramblers-big-band",
+      "name": "The Burrhead Ramblers (big band)",
+      "genre": "Bluegrass / Folk",
+      "links": [
+        "https://www.youtube.com/watch?v=FFik4o67i84"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "the-exploding-brains",
+      "name": "The Exploding Brains",
+      "genre": "Acoustic Duo",
+      "links": [
+        "https://youtu.be/KVuJWj7YSVw?is=PHjkRx3TcDlJzXba"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "the-non-essentials",
+      "name": "The Non-Essentials",
+      "genre": "Classic rock/90s",
+      "links": [
+        "https://www.instagram.com/reel/DauyXqTOSFU/?igsh=MTV3a29sYnV0MmxpbA==",
+        "https://www.instagram.com/the_nonessentials_live?igsh=MXYzMGpiNXB0ajIydA=="
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "the-ruckets",
+      "name": "The Ruckets",
+      "genre": "Americana",
+      "links": [
+        "https://www.youtube.com/@angrychairmusic",
+        "http://www.angrychairmusic.com"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "this-just-kim",
+      "name": "this just Kim",
+      "genre": "classic rock/pop",
+      "links": [
+        "https://www.youtube.com/watch?v=TM5CJk1Ona4",
+        "https://www.instagram.com/thisjust_kim/",
+        "https://www.instagram.com/kimberlyski/"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "untwisted",
+      "name": "unTwisted",
+      "genre": "Emo/punk",
+      "links": [
+        "https://youtu.be/kfjpTRvZ8II?is=8hxw3q-UslIXREKf",
+        "https://open.spotify.com/album/1dgDOOOysNU04tQKCxp22e?si=Ihd-YitPQA2ehUhUvg7QKg&utm_source=copy-link",
+        "https://youtu.be/FGIQE0lcMzk?is=sI8QWW2mFJuHHry2"
+      ],
+      "tipUrl": null
+    },
+    {
+      "id": "val-kinzler-band",
+      "name": "Val kinzler band",
+      "genre": "Blue's originals NYC",
+      "links": [],
+      "tipUrl": null
+    },
+    {
+      "id": "willie-nillie-nelson",
+      "name": "Willie Nillie Nelson",
+      "genre": "Acoustic",
+      "links": [
+        "https://www.youtube.com/watch?v=3yQmly1XaSM&list=PLr15Wr1mv2FmJ5K2kNElEiRjIGuooxsU7",
+        "http://instagram.com/copperechoes"
+      ],
+      "tipUrl": null
+    }
+  ]
+}
