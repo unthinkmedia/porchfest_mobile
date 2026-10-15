@@ -16,6 +16,15 @@ jar. The current source contains no Venmo links. Missing genres are explicitly
 marked as to be announced, not inferred. Artist submissions that are not on the
 schedule are clearly labeled in the directory.
 
+## Poster palette
+
+The site uses colors sampled from the Rutherford Porchfest 2026 map poster:
+navy `#10284a`, burgundy `#751b24`, olive `#6c712f`, mustard gold `#b2a433`,
+terracotta `#9e4130`, map gray `#f7f7f7`, and white `#ffffff`.
+Compressed artwork colors are approximate. Supporting muted text, borders, and
+pale olive surfaces are adapted for readable web contrast; gold is a background
+accent, not small text on white. Palette tokens live in `styles.css`.
+
 ## Local development
 
 No build step or JavaScript dependencies are required:
