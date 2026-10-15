@@ -9,6 +9,10 @@ simultaneous performances and the next time slot, with a map link for each porch
 Before festival day it shows the first set; during breaks it shows no live acts;
 after the final set it shows a thank-you. The agenda, searchable artist directory,
 and tipping page are linked in the bottom navigation.
+During performances, the home page puts "Who's playing now" first, with direct
+payment buttons (or tip-jar guidance) on the live cards and a compact introduction
+below. The first artist's payment button is visible without scrolling on typical
+phone screens; additional simultaneous artists may require scrolling.
 
 Artists donate their time. Tipping uses an artist-provided HTTPS payment link when
 one has been supplied; otherwise visitors are directed to the artist's porch tip

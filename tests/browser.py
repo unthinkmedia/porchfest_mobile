@@ -85,6 +85,8 @@ with sync_playwright() as p:
     expect(page.locator(".live-pill")).to_have_count(2)
     assert page.locator(".is-live").filter(has_text="this just kim").count() == 1
     assert page.locator(".is-live").filter(has_text="Joe Frame").count() == 1
+    expect(page.locator("#main > section").first).to_have_class("section live-now")
+    expect(page.locator(".live-now .jar-note")).to_have_count(2)
     page.set_viewport_size({"width": 390, "height": 844})
     page.screenshot(path=str(ARTIFACTS / "porchfest-live-mobile.png"), full_page=True, animations="disabled")
     page.get_by_role("link", name="Donate / tip an artist").click()
@@ -101,10 +103,28 @@ with sync_playwright() as p:
         "href", "https://venmo.com/Paul-Rosevear"
     )
 
-    page.clock.set_fixed_time(datetime.fromisoformat("2026-10-17T16:50:00+00:00"))
+    page.clock.set_fixed_time(datetime.fromisoformat("2026-10-17T15:10:00+00:00"))
     page.goto(f"{BASE}/#home")
+    live_tip = page.locator(".live-now .tip-button")
+    expect(live_tip).to_have_attribute("href", "https://venmo.com/staceysianna")
+    for width, height in [(320, 568), (375, 667), (390, 844), (768, 1024), (1280, 900)]:
+        page.set_viewport_size({"width": width, "height": height})
+        page.evaluate("window.scrollTo(0, 0)")
+        expect(live_tip).to_be_visible()
+        box = live_tip.bounding_box()
+        nav_top = page.locator(".bottom-nav").bounding_box()["y"]
+        assert box["y"] >= 0 and box["y"] + box["height"] <= nav_top, (width, height, box, nav_top)
+        assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
+        assert page.locator("h1").count() == 1
+    page.set_viewport_size({"width": 390, "height": 844})
+    page.screenshot(path=str(ARTIFACTS / "porchfest-live-donation-above-fold.png"), animations="disabled")
+
+    page.clock.set_fixed_time(datetime.fromisoformat("2026-10-17T16:50:00+00:00"))
+    page.clock.fast_forward(30_000)
     expect(page.locator(".live-pill")).to_have_count(0)
     expect(page.get_by_text("A little break between sets.")).to_be_visible()
+    expect(page.locator(".live-now")).to_have_count(0)
+    expect(page.locator(".hero")).to_be_visible()
     page.clock.set_fixed_time(datetime.fromisoformat("2026-10-18T01:30:00+00:00"))
     page.clock.fast_forward(30_000)
     expect(page.get_by_text("Thanks for listening.")).to_be_visible()

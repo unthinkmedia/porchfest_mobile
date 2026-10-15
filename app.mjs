@@ -40,24 +40,29 @@ function intro(eyebrow, title, description) {
 }
 
 function home(state) {
+  const live = state.current.length > 0;
   const firstSetTime = formatTime(Math.min(...data.sets.map(set => set.start)));
   const status = state.finished ? "That's a wrap. What a day."
     : state.before ? "See you Saturday, October 17."
       : state.current.length ? "The neighborhood is making music."
         : "Take a breath. Find your next porch.";
   const current = state.current.length
-    ? `<div class="cards">${state.current.map(set => setCard(set, true)).join("")}</div>`
+    ? `<div class="cards">${state.current.map(set => setCard(set, true, true)).join("")}</div>`
     : `<div class="empty-state"><span aria-hidden="true">&#9835;</span><div><h3>${state.finished ? "Thanks for listening." : state.before ? "The porches are warming up." : "A little break between sets."}</h3>
       <p>${state.finished ? "You can still discover the artists and send a little love." : state.before ? `Music starts at ${firstSetTime} on October 17. On festival day, this spot follows the music in real time.` : "No scheduled set is playing right now. The next performances are below."}</p></div></div>`;
-  return `<section class="hero">
+  const hero = live
+    ? `<section class="live-intro"><h2>Your town. Your <em>soundtrack.</em></h2><p>Artists donate their time. A tip, a follow, a little love.</p></section>`
+    : `<section class="hero">
     <div class="hero-copy"><p class="eyebrow">OCTOBER 17, 2026 &middot; RUTHERFORD, NJ</p>
       <h1>Your town.<br>Your <em>soundtrack.</em></h1>
       <p>One Saturday. ${data.porches.length} porches.<br>A whole neighborhood of good music.</p>
       <a class="button dark-button" href="#agenda">Find your next favorite &#8599;</a>
     </div>
-  </section>
+  </section>`;
+  const now = `<section class="section${live ? " live-now" : ""}" aria-labelledby="now-title"><div class="section-heading"><div><p class="eyebrow">${live ? "LIVE ON THE PORCHES / ALL TIMES EASTERN" : "FOLLOW THE MUSIC"}</p><${live ? "h1" : "h2"} id="now-title">Who's playing now</${live ? "h1" : "h2"}></div><a href="#agenda" class="text-link">Full agenda &#8599;</a></div>${current}<p class="small-note">Scheduled set times, refreshed automatically. Actual performances may run differently.</p></section>`;
+  return `${live ? now : hero}
   <div class="day-strip"><span class="status-dot"></span><strong>${status}</strong><span class="eastern">ALL TIMES EASTERN</span></div>
-  <section class="section" aria-labelledby="now-title"><div class="section-heading"><div><p class="eyebrow">FOLLOW THE MUSIC</p><h2 id="now-title">Who's playing now</h2></div><a href="#agenda" class="text-link">Full agenda &#8599;</a></div>${current}<p class="small-note">Scheduled set times, refreshed automatically. Actual performances may run differently.</p></section>
+  ${live ? hero : now}
   <section class="section" aria-labelledby="next-title"><div class="section-heading"><div><p class="eyebrow">YOUR NEXT STOP</p><h2 id="next-title">${state.before ? "First up on the porches" : "Up next"}</h2></div>${state.next.length ? `<span class="next-time">${formatTime(state.next[0].start)}</span>` : ""}</div>
     ${state.next.length ? `<div class="cards">${state.next.map(set => setCard(set)).join("")}</div><p class="small-note">Tap a map link to find the porch. Map searches use the location names supplied by the organizers.</p>` : '<p class="empty-copy">That was the last set! Keep the music going in the artist directory.</p>'}</section>
   <section class="generosity"><span class="heart" aria-hidden="true">&#9825;</span><div><p class="eyebrow">FREE MUSIC. REAL GENEROSITY.</p><h2>They bring the music.<br>We bring the love.</h2><p>Every artist is donating their time. If a song makes your day, show a little appreciation: a tip in the jar, a digital tip when shared, or a follow goes a long way.</p><a class="button dark-button" href="#support">Donate / tip an artist &#9825;</a></div></section>
