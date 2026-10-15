@@ -79,6 +79,9 @@ with sync_playwright() as p:
     expect(page.get_by_role("link", name="Tip Juke Jams on Venmo")).to_have_attribute(
         "href", "https://venmo.com/jukejams"
     )
+    expect(page.get_by_role("link", name="Tip Mark P Presti Jr. on Venmo")).to_have_attribute(
+        "href", "https://venmo.com/Mark-Presti-1"
+    )
 
     page.clock.set_fixed_time(datetime.fromisoformat("2026-10-17T16:50:00+00:00"))
     page.goto(f"{BASE}/#home")
