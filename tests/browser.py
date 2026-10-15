@@ -20,6 +20,7 @@ with sync_playwright() as p:
     expect(page.get_by_text("The porches are warming up.")).to_be_visible()
     assert page.locator(".live-pill").count() == 0
     assert page.get_by_role("link", name="Map to Felician").count() == 1
+    expect(page.locator(".porch-art")).to_have_count(0)
     page.screenshot(path=str(ARTIFACTS / "porchfest-home-mobile.png"), full_page=True, animations="disabled")
 
     for width in [320, 390, 768, 1280]:

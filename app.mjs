@@ -54,7 +54,6 @@ function home(state) {
       <p>One Saturday. Eight porches.<br>A whole neighborhood of good music.</p>
       <a class="button dark-button" href="#agenda">Find your next favorite &#8599;</a>
     </div>
-    <div class="porch-art" aria-hidden="true"><span class="sun">&#10039;</span><div class="roof"></div><div class="house"><span class="window"></span><span class="door"></span><span class="window"></span></div><div class="porch-floor"></div><span class="music-note note-one">&#9834;</span><span class="music-note note-two">&#9835;</span><span class="art-caption">MEET YOU ON THE PORCH.</span></div>
   </section>
   <div class="day-strip"><span class="status-dot"></span><strong>${status}</strong><span class="eastern">ALL TIMES EASTERN</span></div>
   <section class="section" aria-labelledby="now-title"><div class="section-heading"><div><p class="eyebrow">FOLLOW THE MUSIC</p><h2 id="now-title">Who's playing now</h2></div><a href="#agenda" class="text-link">Full agenda &#8599;</a></div>${current}<p class="small-note">Scheduled set times, refreshed automatically. Actual performances may run differently.</p></section>
