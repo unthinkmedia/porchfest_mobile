@@ -19,6 +19,8 @@ Missing genres are explicitly
 marked as to be announced, not inferred. The artist directory, its count, and its
 search results include only profiles matching an act on the current agenda.
 Unscheduled submissions are not displayed.
+Artist cards also show a direct donation button when an artist has supplied a
+valid payment link, using the same payment-service labels as the tipping page.
 
 ## Poster palette
 

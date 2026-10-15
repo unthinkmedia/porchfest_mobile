@@ -31,10 +31,16 @@ with sync_playwright() as p:
             expect(page.locator(f'[data-page="{route}"]')).to_have_attribute("aria-current", "page")
             assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth"), (width, route)
             assert page.locator("h1").count() == 1
+    schedule = page.request.get(f"{BASE}/data.json").json()
+    artist_genres = {artist["id"]: artist["genre"] for artist in schedule["artists"]}
+    expected_missing_genres = sum(
+        artist_genres.get(entry["artistId"], "Community showcase" if "Got Talent" in entry["name"] else "Genre to be announced")
+        == "Genre to be announced" for entry in schedule["sets"]
+    )
     page.goto(f"{BASE}/#agenda")
     expect(page.locator(".set-card")).to_have_count(25)
     assert page.locator(".walk-break").count() == 4
-    assert page.get_by_text("Genre to be announced", exact=True).count() == 3
+    expect(page.get_by_text("Genre to be announced", exact=True)).to_have_count(expected_missing_genres)
     assert page.get_by_text("Hard Rock - Performing Acoustic", exact=True).is_visible()
     for link in page.locator(".map-link").all():
         assert "Rutherford" in link.get_attribute("href")
@@ -42,13 +48,21 @@ with sync_playwright() as p:
     page.goto(f"{BASE}/#artists")
     expect(page.locator(".artist-card")).to_have_count(21)
     expect(page.locator("#artist-count")).to_have_text("21 artist profiles")
-    schedule = page.request.get(f"{BASE}/data.json").json()
     scheduled_ids = {entry["artistId"] for entry in schedule["sets"]}
     expected_ids = {artist["id"] for artist in schedule["artists"] if artist["id"] in scheduled_ids}
     actual_ids = set(page.locator(".artist-card").evaluate_all(
         "(cards) => cards.map(card => card.dataset.artist)"
     ))
     assert actual_ids == expected_ids
+    for artist in schedule["artists"]:
+        if artist["id"] not in scheduled_ids:
+            continue
+        card = page.locator(f'.artist-card[data-artist="{artist["id"]}"]')
+        if artist["tipUrl"]:
+            expect(card.locator(".tip-button")).to_have_attribute("href", artist["tipUrl"])
+        else:
+            expect(card.locator(".tip-button")).to_have_count(0)
+        expect(card.locator(".jar-note")).to_have_count(0)
     search = page.get_by_label("Find an artist or genre")
     search.fill("7th Street")
     expect(page.locator(".artist-card:visible")).to_have_count(0)
@@ -104,6 +118,7 @@ with sync_playwright() as p:
         ("https://enroll.zellepay.com/qr-codes?data=EXAMPLE", "Zelle"),
         ("https://artist.example/tip", None),
         ("javascript:alert(1)", None),
+        (None, None),
     ]:
         def with_payment(route):
             response = route.fetch()
@@ -114,7 +129,7 @@ with sync_playwright() as p:
         page.route("**/data.json", with_payment)
         page.goto(f"{BASE}/#support")
         page.reload()
-        if tip_url.startswith("https:"):
+        if tip_url and tip_url.startswith("https:"):
             label = "Tip this just Kim" + (f" on {service}" if service else "")
             links = page.get_by_role("link", name=label)
             expect(links).to_have_count(2)
@@ -127,6 +142,19 @@ with sync_playwright() as p:
         else:
             expect(page.locator(".is-live .jar-note")).to_have_count(2)
             expect(page.locator('a[href^="javascript:"]')).to_have_count(0)
+        page.goto(f"{BASE}/#artists")
+        card = page.locator('.artist-card[data-artist="this-just-kim"]')
+        expect(card).to_be_visible()
+        if tip_url and tip_url.startswith("https:"):
+            expect(card.get_by_role("link", name=label)).to_have_attribute("href", tip_url)
+            expect(card.locator(".tip-button")).to_have_attribute("target", "_blank")
+            expect(card.locator(".tip-button")).to_have_attribute("rel", "noopener noreferrer")
+            for width in [320, 390, 768, 1280]:
+                page.set_viewport_size({"width": width, "height": 844})
+                assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth"), (width, service, "artists")
+        else:
+            expect(card.locator(".tip-button")).to_have_count(0)
+        expect(card.locator(".jar-note")).to_have_count(0)
         page.unroute("**/data.json")
     page.route("**/data.json", lambda route: route.fulfill(status=503, body="Unavailable"))
     page.goto(BASE)

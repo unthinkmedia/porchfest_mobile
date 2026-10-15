@@ -16,11 +16,11 @@ const external = (url, label, className = "") =>
   `<a class="${className}" href="${escape(url)}" target="_blank" rel="noopener noreferrer">${label}<span class="sr-only"> (opens in a new tab)</span></a>`;
 const mapLink = porch => external(mapUrl(porch), `Map to ${escape(porch.name)} <span aria-hidden="true">&#8599;</span>`, "map-link");
 
-function tipContent(artist) {
+function tipContent(artist, showFallback = true) {
   const link = paymentLink(artist?.tipUrl);
   return link
     ? external(link.url, `Tip ${escape(artist.name)}${link.service ? ` on ${escape(link.service)}` : ""} &#8599;`, "button tip-button")
-    : `<p class="jar-note"><span aria-hidden="true">&#9825;</span> No digital tipping link shared. Please leave a tip in the artist's jar at the porch.</p>`;
+    : showFallback ? `<p class="jar-note"><span aria-hidden="true">&#9825;</span> No digital tipping link shared. Please leave a tip in the artist's jar at the porch.</p>` : "";
 }
 
 function setCard(set, live = false, tip = false) {
@@ -98,6 +98,7 @@ function artistCard(artist) {
     <div class="artist-details"><h2>${escape(artist.name)}</h2><p class="genre">${escape(artist.genre)}</p>
     <p class="artist-slot">${sets.map(set => `${formatTime(set.start)} &middot; ${escape(porchFor(set).name)}`).join("<br>")}</p>
     <div class="artist-links">${artist.links.length ? artist.links.map(url => external(url, `${escape(linkLabel(url))} &#8599;`)).join("") : '<span class="small-note">No direct music or social links shared yet.</span>'}</div>
+    ${tipContent(artist, false)}
     </div></article>`;
 }
 
