@@ -673,6 +673,13 @@
         "http://instagram.com/copperechoes"
       ],
       "tipUrl": null
+    },
+    {
+      "id": "bob-stritch",
+      "name": "Bob Stritch",
+      "genre": "Singer/Song Writer",
+      "tipUrl": null,
+      "links": []
     }
   ]
 }
