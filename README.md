@@ -12,7 +12,8 @@ and tipping page are linked in the bottom navigation.
 
 Artists donate their time. Tipping uses a verified-format HTTPS Venmo link when
 one has been supplied; otherwise visitors are directed to the artist's porch tip
-jar. The current source contains no Venmo links. Missing genres are explicitly
+jar. Juke Jams' organizer-provided Venmo is `https://venmo.com/jukejams`.
+Missing genres are explicitly
 marked as to be announced, not inferred. The artist directory, its count, and its
 search results include only profiles matching an act on the current agenda.
 Unscheduled submissions are not displayed.

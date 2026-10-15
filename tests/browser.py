@@ -75,7 +75,10 @@ with sync_playwright() as p:
     page.get_by_role("link", name="Donate / tip an artist").click()
     expect(page.get_by_role("heading", name="Show the current artists some love")).to_be_visible()
     assert page.locator(".is-live .jar-note").count() == 2
-    assert page.locator("a[href*='venmo.com']").count() == 0
+    assert page.locator(".is-live a[href*='venmo.com']").count() == 0
+    expect(page.get_by_role("link", name="Tip Juke Jams on Venmo")).to_have_attribute(
+        "href", "https://venmo.com/jukejams"
+    )
 
     page.clock.set_fixed_time(datetime.fromisoformat("2026-10-17T16:50:00+00:00"))
     page.goto(f"{BASE}/#home")
