@@ -41,9 +41,9 @@ export function editorConfig(authBaseUrl) {
               { label: "Artist name", name: "name", widget: "string" },
               { label: "Genre", name: "genre", widget: "string" },
               {
-                label: "Venmo URL", name: "tipUrl", widget: "string", required: false,
-                hint: "Exact artist-provided URL, such as https://venmo.com/jukejams. Leave blank to show tip-jar guidance.",
-                pattern: ["^https://(?:www\\.|account\\.)?venmo\\.com/[^\\s]+$", "Enter a complete HTTPS Venmo URL."],
+                label: "Payment / tipping URL", name: "tipUrl", widget: "string", required: false,
+                hint: "Exact artist-provided HTTPS link: Venmo, Cash App, PayPal, Zelle shareable link, or another tipping service. Verify the recipient. Do not enter bank details, phone numbers, or emails. Leave blank to show tip-jar guidance.",
+                pattern: ["^https://[^\\s]+$", "Enter a complete HTTPS payment link."],
               },
               {
                 label: "Public music & social links", name: "links", widget: "list",

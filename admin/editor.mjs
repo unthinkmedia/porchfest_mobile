@@ -1,6 +1,6 @@
 import { editorConfig } from "./config.mjs";
 import { validateGuide } from "./validate.mjs";
-import { formatTime } from "../core.mjs";
+import { formatTime, paymentLink } from "../core.mjs";
 
 const status = document.querySelector("#admin-status");
 const message = document.querySelector("#admin-message");
@@ -44,11 +44,12 @@ async function startEditor() {
       ...(data.sets ?? []).map(set => {
         const artist = (data.artists ?? []).find(item => item.id === set.artistId);
         const porch = (data.porches ?? []).find(item => item.id === set.porchId);
+        const tip = paymentLink(artist?.tipUrl);
         return h("article", { key: set.id, className: "set-card", style: { marginBottom: "16px" } },
           h("p", { className: "time" }, `${formatTime(set.start)} – ${formatTime(set.end)}`),
           h("h3", {}, set.name), h("p", {}, porch?.name ?? "Choose a porch"),
           h("p", { className: "genre" }, artist?.genre ?? "Genre to be announced"),
-          h("p", {}, artist?.tipUrl ? `Venmo: ${artist.tipUrl}` : "Tip jar at the porch"),
+          h("p", {}, tip ? `${tip.service ?? "Digital tip"}: ${tip.url}` : "Tip jar at the porch"),
         );
       }),
     );

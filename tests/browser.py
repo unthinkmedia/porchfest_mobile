@@ -96,18 +96,38 @@ with sync_playwright() as p:
     expect(page.get_by_text("Thanks for listening.")).to_be_visible()
     assert page.locator(".set-card").count() == 0
 
-    def with_venmo(route):
-        response = route.fetch()
-        data = response.json()
-        next(artist for artist in data["artists"] if artist["id"] == "this-just-kim")["tipUrl"] = "https://venmo.com/example-artist"
-        route.fulfill(response=response, json=data)
-
-    page.route("**/data.json", with_venmo)
     page.clock.set_fixed_time(datetime.fromisoformat("2026-10-17T17:10:00+00:00"))
-    page.goto(f"{BASE}/#support")
-    page.reload()
-    expect(page.get_by_role("link", name="Tip this just Kim on Venmo")).to_have_count(2)
-    page.unroute("**/data.json")
+    for tip_url, service in [
+        ("https://venmo.com/example-artist", "Venmo"),
+        ("https://cash.app/$example-artist", "Cash App"),
+        ("https://paypal.me/example-artist", "PayPal"),
+        ("https://enroll.zellepay.com/qr-codes?data=EXAMPLE", "Zelle"),
+        ("https://artist.example/tip", None),
+        ("javascript:alert(1)", None),
+    ]:
+        def with_payment(route):
+            response = route.fetch()
+            data = response.json()
+            next(artist for artist in data["artists"] if artist["id"] == "this-just-kim")["tipUrl"] = tip_url
+            route.fulfill(response=response, json=data)
+
+        page.route("**/data.json", with_payment)
+        page.goto(f"{BASE}/#support")
+        page.reload()
+        if tip_url.startswith("https:"):
+            label = "Tip this just Kim" + (f" on {service}" if service else "")
+            links = page.get_by_role("link", name=label)
+            expect(links).to_have_count(2)
+            for link in links.all():
+                expect(link).to_have_attribute("href", tip_url)
+                expect(link).to_have_attribute("rel", "noopener noreferrer")
+            for width in [320, 390]:
+                page.set_viewport_size({"width": width, "height": 844})
+                assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth"), (width, service)
+        else:
+            expect(page.locator(".is-live .jar-note")).to_have_count(2)
+            expect(page.locator('a[href^="javascript:"]')).to_have_count(0)
+        page.unroute("**/data.json")
     page.route("**/data.json", lambda route: route.fulfill(status=503, body="Unavailable"))
     page.goto(BASE)
     page.reload()

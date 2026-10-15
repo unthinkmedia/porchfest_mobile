@@ -1,4 +1,4 @@
-import { venmoUrl } from "../core.mjs";
+import { paymentLink } from "../core.mjs";
 
 const knownUnprofiledActs = new Set([
   "bob-stritch", "the-hungry-end",
@@ -60,10 +60,9 @@ export function validateGuide(input) {
     if (!Array.isArray(artist.links)) throw new Error(`${artist.name}: links must be a list.`);
     for (const link of artist.links) url(link, `${artist.name}: music or social link`);
     if (artist.tipUrl !== null) {
-      url(artist.tipUrl, `${artist.name}: Venmo URL`);
-      const parsed = new URL(artist.tipUrl);
-      if (!venmoUrl(artist.tipUrl) || parsed.pathname === "/") {
-        throw new Error(`${artist.name}: supply the artist's full HTTPS Venmo URL, or leave it blank.`);
+      url(artist.tipUrl, `${artist.name}: tipping URL`);
+      if (!paymentLink(artist.tipUrl)) {
+        throw new Error(`${artist.name}: supply the artist's full HTTPS payment link, or leave it blank.`);
       }
     }
   }

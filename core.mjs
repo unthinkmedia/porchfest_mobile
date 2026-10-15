@@ -30,12 +30,21 @@ export function mapUrl(porch) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(porch.mapQuery)}`;
 }
 
-export function venmoUrl(value) {
-  if (!value) return null;
+export function paymentLink(value) {
+  if (typeof value !== "string" || !value.trim()) return null;
   try {
     const url = new URL(value);
-    return url.protocol === "https:" && ["venmo.com", "www.venmo.com", "account.venmo.com"].includes(url.hostname)
-      ? url.href : null;
+    if (url.protocol !== "https:" || url.username || url.password) return null;
+    const host = url.hostname.replace(/^www\./, "");
+    const services = {
+      "venmo.com": "Venmo", "account.venmo.com": "Venmo",
+      "cash.app": "Cash App",
+      "paypal.me": "PayPal", "paypal.com": "PayPal",
+      "zellepay.com": "Zelle", "enroll.zellepay.com": "Zelle", "zelle.com": "Zelle",
+    };
+    const service = Object.hasOwn(services, host) ? services[host] : null;
+    if (service && url.pathname === "/" && !url.search) return null;
+    return { url: url.href, service };
   } catch {
     return null;
   }

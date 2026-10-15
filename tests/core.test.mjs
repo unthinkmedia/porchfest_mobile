@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { eventClock, scheduleState, formatTime, mapUrl, venmoUrl } from "../core.mjs";
+import { eventClock, scheduleState, formatTime, mapUrl, paymentLink } from "../core.mjs";
 
 const data = JSON.parse(readFileSync(new URL("../data.json", import.meta.url)));
 const at = value => scheduleState(data, new Date(value));
@@ -62,10 +62,26 @@ test("format noon and evening times correctly and scope maps to Rutherford", () 
   }
 });
 
-test("only real HTTPS Venmo hosts become tip links", () => {
-  assert.equal(venmoUrl("https://venmo.com/porchfest-artist"), "https://venmo.com/porchfest-artist");
-  for (const value of [null, "", "not a URL", "javascript:alert(1)", "https://venmo.com.evil.example/a", "http://venmo.com/a"]) {
-    assert.equal(venmoUrl(value), null);
+test("HTTPS payment links support multiple services and label only exact known hosts", () => {
+  for (const [url, service] of [
+    ["https://venmo.com/porchfest-artist", "Venmo"],
+    ["https://www.venmo.com/porchfest-artist", "Venmo"],
+    ["https://account.venmo.com/u/porchfest-artist", "Venmo"],
+    ["https://cash.app/$example-artist", "Cash App"],
+    ["https://paypal.me/example-artist", "PayPal"],
+    ["https://www.paypal.com/donate/?hosted_button_id=EXAMPLE", "PayPal"],
+    ["https://enroll.zellepay.com/qr-codes?data=EXAMPLE", "Zelle"],
+    ["https://www.zelle.com/qr-codes?data=EXAMPLE", "Zelle"],
+    ["https://artist.example/tip", null],
+    ["https://venmo.com.evil.example/artist", null],
+    ["https://constructor/tip", null],
+  ]) {
+    assert.deepEqual(paymentLink(url), { url, service });
+  }
+  for (const value of [null, "", 42, "not a URL", "javascript:alert(1)", "mailto:artist@example.com",
+    "tel:+15555550123", "http://venmo.com/a", "https://user:pass@cash.app/$artist",
+    "https://venmo.com/", "https://cash.app/"]) {
+    assert.equal(paymentLink(value), null);
   }
 });
 

@@ -78,11 +78,11 @@ with sync_playwright() as p:
     page.get_by_text("Artists, porches & agenda", exact=True).click()
     artist_row = page.get_by_text(re.compile("^Juke Jams —")).first.locator("..")
     artist_row.get_by_role("button").first.click()
-    tip_input = page.get_by_role("textbox", name=re.compile("Venmo URL"))
+    tip_input = page.get_by_role("textbox", name=re.compile("^Payment"))
     expect(tip_input).to_have_value("https://venmo.com/jukejams")
-    tip_input.fill("https://venmo.com/jukejams-test-preview")
+    tip_input.fill("https://cash.app/$test-only-preview")
     expect(page.frame_locator("iframe").get_by_text(
-        "Venmo: https://venmo.com/jukejams-test-preview", exact=True
+        "Cash App: https://cash.app/$test-only-preview", exact=True
     )).to_be_visible()
     page.get_by_role("button", name="Publish", exact=True).click()
     page.get_by_text("Publish now", exact=True).click()
@@ -91,7 +91,7 @@ with sync_playwright() as p:
     blob = writes[0][2]
     saved_text = base64.b64decode(blob["content"]).decode() if blob.get("encoding") == "base64" else blob["content"]
     expected = json.loads(fixture)
-    next(artist for artist in expected["artists"] if artist["id"] == "juke-jams")["tipUrl"] = "https://venmo.com/jukejams-test-preview"
+    next(artist for artist in expected["artists"] if artist["id"] == "juke-jams")["tipUrl"] = "https://cash.app/$test-only-preview"
     assert json.loads(saved_text) == expected, "CMS must preserve all fields and other artist links."
     assert writes[1][2]["tree"] == [{"path": "data.json", "mode": "100644", "type": "blob", "sha": "new-blob"}]
     assert writes[-1][1].endswith("/git/refs/heads/main")

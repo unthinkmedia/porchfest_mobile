@@ -34,6 +34,23 @@ class ImportTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             importer.minute_of_day("unknown")
 
+    def test_payment_links_are_recognized_without_inventing_recipient_details(self):
+        for link in [
+            "https://venmo.com/example-artist", "https://cash.app/$example-artist",
+            "https://paypal.me/example-artist", "https://www.paypal.com/donate/?hosted_button_id=EXAMPLE",
+            "https://enroll.zellepay.com/qr-codes?data=EXAMPLE",
+        ]:
+            self.assertEqual(importer.payment_url(["https://artist.example/music", link]), link)
+        for link in [
+            "https://venmo.com.evil.example/artist", "http://cash.app/$artist",
+            "https://cash.app/", "https://user:pass@cash.app/$artist", "artist@example.com",
+        ]:
+            self.assertIsNone(importer.payment_url([link]))
+        self.assertEqual(
+            importer.public_links("cash.app/$example-artist paypal.me/example-artist", []),
+            ["https://cash.app/$example-artist", "https://paypal.me/example-artist"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

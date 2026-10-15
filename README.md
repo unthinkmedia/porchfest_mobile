@@ -10,7 +10,7 @@ Before festival day it shows the first set; during breaks it shows no live acts;
 after the final set it shows a thank-you. The agenda, searchable artist directory,
 and tipping page are linked in the bottom navigation.
 
-Artists donate their time. Tipping uses a verified-format HTTPS Venmo link when
+Artists donate their time. Tipping uses an artist-provided HTTPS payment link when
 one has been supplied; otherwise visitors are directed to the artist's porch tip
 jar. Juke Jams' organizer-provided Venmo is `https://venmo.com/jukejams`.
 Mark P Presti Jr.'s is `https://venmo.com/Mark-Presti-1`.
@@ -61,8 +61,8 @@ annotations from names and merges duplicate profiles. Review the generated diff
 before publishing, especially any newly supplied links. The import stops for
 review if the schedule no longer has the expected 8 porches and 25 sets.
 
-If an artist supplies a Venmo URL separately, set their `tipUrl` in `data.json`
-to their exact `https://venmo.com/...` URL. Do not guess handles. Reapply separately
+If an artist supplies a payment URL separately, set their `tipUrl` in `data.json`
+to their exact HTTPS payment link. Do not guess handles. Reapply separately
 provided tipping links after refreshing the snapshot. Map searches use the
 organizers' location names plus Rutherford, NJ; exact porch addresses have not
 been independently verified.
@@ -75,7 +75,7 @@ approved `unthinkmedia` GitHub account. Authentication is hosted at
 The free, MIT-licensed Decap CMS 3.14.1 bundle is self-hosted in
 `admin/vendor/` with its license; there is no third-party CMS script at login.
 
-The editor manages the artists (including exact Venmo URLs), public links, porches
+The editor manages the artists (including payment/tipping URLs), public links, porches
 and map search addresses, and agenda sets in `data.json`. A draft preview shows
 sets with their times, locations, genres, and tipping information. The event name,
 date, and timezone are fixed for this edition. For times, enter whole minutes
@@ -84,8 +84,16 @@ after midnight Eastern: 11 AM = 660; 1:45 PM = 825; 5:15 PM = 1035.
 Keep existing IDs unchanged; when adding an artist or porch, give it a unique
 lowercase ID and use that ID in the agenda. Missing references, duplicate IDs,
 invalid or unsafe URLs, unexpected fields, and overlapping sets on the same porch
-block publishing. Blank Venmo fields become `null`, keeping the tip-jar fallback.
+block publishing. Blank payment fields become `null`, keeping the tip-jar fallback.
 Only artists on the agenda appear in the public directory.
+
+Each artist currently has one primary payment link. Venmo, Cash App, PayPal, and
+recognized Zelle domains receive service-specific button labels; other HTTPS
+links receive a generic tip button. This checks URL format, not recipient ownership.
+Always verify the recipient with the artist. Zelle requires an artist-provided
+shareable HTTPS link; a raw phone number or email is not a link and is not
+published. Never enter bank account details. Payments happen on the provider's
+site or app, not on this website.
 
 **Publish** commits to `main`; Pages usually takes about a minute to update.
 Drafts and preview are not live. Avoid editing the same guide simultaneously
@@ -149,7 +157,7 @@ python3 -m unittest discover -s tests -p '*_test.py'
 (override with `PORCHFEST_TEST_URL`). Set `PORCHFEST_BROWSER_CHANNEL=chrome`
 or `msedge` to use an already-installed browser instead of bundled Chromium.
 It checks phone/tablet/desktop layouts,
-time-aware states, all pages, search, maps, Venmo and tip-jar behavior, and loading
+time-aware states, all pages, search, maps, payment-service labels and tip-jar behavior, and loading
 errors. Set `PORCHFEST_ARTIFACTS` to choose a screenshot output directory.
 `tests/admin-browser.py` verifies the setup screen, real CMS login startup,
 draft preview, lossless publishing, and invalid-draft protection using intercepted

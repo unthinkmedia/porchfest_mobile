@@ -68,7 +68,7 @@ def public_links(text, hyperlinks):
     urls.extend(
         "https://" + match
         for match in re.findall(
-            r"(?<![/.\w@])(?:www\.)?[\w-]+(?:\.[\w-]+)*\.(?:com|band)(?:/[^\s,<>]*)?", text, flags=re.I
+            r"(?<![/.\w@])(?:www\.)?[\w-]+(?:\.[\w-]+)*\.(?:com|band|app|me)(?:/[^\s,<>]*)?", text, flags=re.I
         )
     )
     if re.search(r"\b(?:instagram|instagrams|insta|ig)\b", text, re.I):
@@ -85,6 +85,20 @@ def public_links(text, hyperlinks):
         key = (parsed.hostname.lower().removeprefix("www."), parsed.path.rstrip("/"), parsed.query)
         unique.setdefault(key, url)
     return list(unique.values())
+
+
+def payment_url(links):
+    hosts = {
+        "venmo.com", "account.venmo.com", "cash.app", "paypal.me", "paypal.com",
+        "zellepay.com", "enroll.zellepay.com", "zelle.com",
+    }
+    for link in links:
+        parsed = urlparse(link)
+        if (parsed.scheme == "https" and (parsed.hostname or "").removeprefix("www.") in hosts
+                and not parsed.username and not parsed.password
+                and (parsed.path not in ("", "/") or parsed.query)):
+            return link
+    return None
 
 
 def minute_of_day(value):
@@ -115,11 +129,9 @@ def main():
             links = public_links("\n".join(row.get(col, "") for col in ("J", "K")), hyperlinks)
             if key in artists:
                 artists[key]["links"] = list(dict.fromkeys(artists[key]["links"] + links))
+                artists[key]["tipUrl"] = artists[key]["tipUrl"] or payment_url(links)
                 continue
-            tip_url = next(
-                (url for url in links if urlparse(url).hostname in ("venmo.com", "www.venmo.com", "account.venmo.com")),
-                None,
-            )
+            tip_url = payment_url(links)
             artists[key] = {"id": key, "name": name, "genre": genre, "links": links, "tipUrl": tip_url}
         slots, region = {}, ""
         for row, _ in read_rows(archive, 1, {"A", "B", "C", "D", "E"}):

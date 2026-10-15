@@ -1,4 +1,4 @@
-import { scheduleState, formatTime, mapUrl, venmoUrl } from "./core.mjs";
+import { scheduleState, formatTime, mapUrl, paymentLink } from "./core.mjs";
 
 const main = document.querySelector("#main");
 let data;
@@ -17,10 +17,10 @@ const external = (url, label, className = "") =>
 const mapLink = porch => external(mapUrl(porch), `Map to ${escape(porch.name)} <span aria-hidden="true">&#8599;</span>`, "map-link");
 
 function tipContent(artist) {
-  const url = venmoUrl(artist?.tipUrl);
-  return url
-    ? external(url, `Tip ${escape(artist.name)} on Venmo &#8599;`, "button tip-button")
-    : `<p class="jar-note"><span aria-hidden="true">&#9825;</span> No Venmo link shared. Please leave a tip in the artist's jar at the porch.</p>`;
+  const link = paymentLink(artist?.tipUrl);
+  return link
+    ? external(link.url, `Tip ${escape(artist.name)}${link.service ? ` on ${escape(link.service)}` : ""} &#8599;`, "button tip-button")
+    : `<p class="jar-note"><span aria-hidden="true">&#9825;</span> No digital tipping link shared. Please leave a tip in the artist's jar at the porch.</p>`;
 }
 
 function setCard(set, live = false, tip = false) {
@@ -60,7 +60,7 @@ function home(state) {
   <section class="section" aria-labelledby="now-title"><div class="section-heading"><div><p class="eyebrow">FOLLOW THE MUSIC</p><h2 id="now-title">Who's playing now</h2></div><a href="#agenda" class="text-link">Full agenda &#8599;</a></div>${current}<p class="small-note">Scheduled set times, refreshed automatically. Actual performances may run differently.</p></section>
   <section class="section" aria-labelledby="next-title"><div class="section-heading"><div><p class="eyebrow">YOUR NEXT STOP</p><h2 id="next-title">${state.before ? "First up on the porches" : "Up next"}</h2></div>${state.next.length ? `<span class="next-time">${formatTime(state.next[0].start)}</span>` : ""}</div>
     ${state.next.length ? `<div class="cards">${state.next.map(set => setCard(set)).join("")}</div><p class="small-note">Tap a map link to find the porch. Map searches use the location names supplied by the organizers.</p>` : '<p class="empty-copy">That was the last set! Keep the music going in the artist directory.</p>'}</section>
-  <section class="generosity"><span class="heart" aria-hidden="true">&#9825;</span><div><p class="eyebrow">FREE MUSIC. REAL GENEROSITY.</p><h2>They bring the music.<br>We bring the love.</h2><p>Every artist is donating their time. If a song makes your day, show a little appreciation: a tip in the jar, a Venmo when shared, or a follow goes a long way.</p><a class="button dark-button" href="#support">Donate / tip an artist &#9825;</a></div></section>
+  <section class="generosity"><span class="heart" aria-hidden="true">&#9825;</span><div><p class="eyebrow">FREE MUSIC. REAL GENEROSITY.</p><h2>They bring the music.<br>We bring the love.</h2><p>Every artist is donating their time. If a song makes your day, show a little appreciation: a tip in the jar, a digital tip when shared, or a follow goes a long way.</p><a class="button dark-button" href="#support">Donate / tip an artist &#9825;</a></div></section>
   <a class="directory-banner" href="#artists"><span><span class="eyebrow">TAKE THE MUSIC HOME</span><strong>Meet the artists</strong><span>Genres, music, and the links they've shared.</span></span><span aria-hidden="true">&#8599;</span></a>`;
 }
 
@@ -79,6 +79,8 @@ function agenda(state) {
 }
 
 function linkLabel(url) {
+  const payment = paymentLink(url);
+  if (payment?.service) return payment.service;
   const host = new URL(url).hostname.replace(/^www\./, "");
   if (host.includes("instagram")) return "Instagram";
   if (host.includes("youtu")) return "Watch";
@@ -86,7 +88,6 @@ function linkLabel(url) {
   if (host.includes("bandcamp")) return "Bandcamp";
   if (host.includes("facebook")) return "Facebook";
   if (host.includes("tiktok")) return "TikTok";
-  if (host.includes("venmo")) return "Venmo";
   return host;
 }
 
@@ -113,9 +114,9 @@ function artists() {
 function support(state) {
   const featured = state.current.length ? state.current : state.next;
   return `${intro("A LITTLE LOVE GOES A LONG WAY", "Tip the talent.", "The music is free because these artists are generously donating their time. Help make it a good day for them, too.")}
-    <div class="support-message"><span class="heart" aria-hidden="true">&#9825;</span><div><h2>Look for the tip jar.</h2><p>Cash at the porch is always a lovely way to say thanks. When an artist shares a Venmo link, you'll find it here. Tips go directly to the artist, not to this website.</p></div></div>
+    <div class="support-message"><span class="heart" aria-hidden="true">&#9825;</span><div><h2>Look for the tip jar.</h2><p>Cash at the porch is always a lovely way to say thanks. When an artist shares a digital tipping link, you'll find it here. Tips go directly to the artist, not to this website. Check the recipient in your payment app before sending.</p></div></div>
     ${featured.length ? `<section class="section"><div class="section-heading"><h2>${state.current.length ? "Show the current artists some love" : state.before ? "First artists to cheer on" : "Coming up next"}</h2></div><div class="cards">${featured.map(set => setCard(set, state.current.includes(set), true)).join("")}</div></section>` : ""}
-    <section class="section"><div class="section-heading"><h2>Find an artist to thank</h2></div><p class="small-note">All scheduled acts, with Venmo when provided. Otherwise, visit their porch's tip jar.</p>
+    <section class="section"><div class="section-heading"><h2>Find an artist to thank</h2></div><p class="small-note">All scheduled acts, with digital tipping links when provided. Otherwise, visit their porch's tip jar.</p>
     <div class="tip-list">${[...new Map(data.sets.map(set => [set.artistId, set])).values()].map(set =>
       `<article class="tip-row"><div><h3>${escape(set.name)}</h3><p>${escape(porchFor(set).name)}</p></div>${tipContent(artistFor(set))}</article>`
     ).join("")}</div></section>`;

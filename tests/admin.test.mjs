@@ -25,8 +25,8 @@ test("valid guide round-trips without losing known tipping links or other fields
 
 test("reject unsafe or malformed tips, private fields, duplicate IDs and broken references", () => {
   const cases = [
-    [d => d.artists[0].tipUrl = "https://venmo.com.evil.example/user", /Venmo URL/],
-    [d => d.artists[0].tipUrl = "https://venmo.com/", /Venmo URL/],
+    [d => d.artists[0].tipUrl = "http://cash.app/$artist", /HTTPS payment link/],
+    [d => d.artists[0].tipUrl = "https://venmo.com/", /HTTPS payment link/],
     [d => d.artists[0].tipUrl = "https://someone:secret@venmo.com/user", /credentials/],
     [d => d.artists[0].links = ["javascript:alert(1)"], /HTTP/],
     [d => d.artists[0].contactEmail = "private@example.com", /unexpected field/],
@@ -39,6 +39,16 @@ test("reject unsafe or malformed tips, private fields, duplicate IDs and broken 
     [d => d.artists = [], /at least one/],
   ];
   for (const [mutate, error] of cases) assert.throws(() => validateGuide(changed(mutate)), error);
+});
+
+test("accept artist-provided payment links without changing the public schema", () => {
+  for (const tipUrl of [
+    "https://cash.app/$example-artist", "https://paypal.me/example-artist",
+    "https://enroll.zellepay.com/qr-codes?data=EXAMPLE", "https://artist.example/tips",
+  ]) {
+    const data = changed(d => { d.artists[0].tipUrl = tipUrl; });
+    assert.deepEqual(validateGuide(data), data);
+  }
 });
 
 test("allow simultaneous porches but not overlapping sets on the same porch", () => {
