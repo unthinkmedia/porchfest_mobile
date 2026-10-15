@@ -17,7 +17,7 @@ with sync_playwright() as p:
     page.goto(BASE)
     page.wait_for_load_state("networkidle")
     page.get_by_role("heading", name="Who's playing now").wait_for()
-    assert page.get_by_text("The porches are warming up.").is_visible()
+    expect(page.get_by_text("The porches are warming up.")).to_be_visible()
     assert page.locator(".live-pill").count() == 0
     assert page.get_by_role("link", name="Map to Felician").count() == 1
     page.screenshot(path=str(ARTIFACTS / "porchfest-home-mobile.png"), full_page=True, animations="disabled")
@@ -31,7 +31,7 @@ with sync_playwright() as p:
             assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth"), (width, route)
             assert page.locator("h1").count() == 1
     page.goto(f"{BASE}/#agenda")
-    assert page.locator(".set-card").count() == 25
+    expect(page.locator(".set-card")).to_have_count(25)
     assert page.locator(".walk-break").count() == 4
     assert page.get_by_text("Genre to be announced", exact=True).count() == 3
     assert page.get_by_text("Hard Rock - Performing Acoustic", exact=True).is_visible()
@@ -39,7 +39,7 @@ with sync_playwright() as p:
         assert "Rutherford" in link.get_attribute("href")
 
     page.goto(f"{BASE}/#artists")
-    assert page.locator(".artist-card").count() == 43
+    expect(page.locator(".artist-card")).to_have_count(43)
     search = page.get_by_label("Find an artist or genre")
     search.fill("rhodora")
     assert page.locator(".artist-card:visible").count() == 1
@@ -59,14 +59,14 @@ with sync_playwright() as p:
     page.set_viewport_size({"width": 390, "height": 844})
     page.screenshot(path=str(ARTIFACTS / "porchfest-live-mobile.png"), full_page=True, animations="disabled")
     page.get_by_role("link", name="Donate / tip an artist").click()
-    assert page.get_by_role("heading", name="Show the current artists some love").is_visible()
+    expect(page.get_by_role("heading", name="Show the current artists some love")).to_be_visible()
     assert page.locator(".is-live .jar-note").count() == 2
     assert page.locator("a[href*='venmo.com']").count() == 0
 
     page.clock.set_fixed_time(datetime.fromisoformat("2026-10-17T16:50:00+00:00"))
     page.goto(f"{BASE}/#home")
-    assert page.locator(".live-pill").count() == 0
-    assert page.get_by_text("A little break between sets.").is_visible()
+    expect(page.locator(".live-pill")).to_have_count(0)
+    expect(page.get_by_text("A little break between sets.")).to_be_visible()
     page.clock.set_fixed_time(datetime.fromisoformat("2026-10-18T01:30:00+00:00"))
     page.clock.fast_forward(30_000)
     expect(page.get_by_text("Thanks for listening.")).to_be_visible()
