@@ -146,7 +146,7 @@
     {
       "id": "set-12",
       "artistId": "cincere",
-      "name": "Cincere",
+      "name": "Uventures",
       "porchId": "porch-4",
       "start": 990,
       "end": 1020
@@ -324,7 +324,7 @@
     },
     {
       "id": "cincere",
-      "name": "Cincere",
+      "name": "Uventures",
       "genre": "Rock",
       "links": [],
       "tipUrl": null
