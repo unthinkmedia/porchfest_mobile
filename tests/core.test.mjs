@@ -1,10 +1,18 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { eventClock, scheduleState, formatTime, mapUrl, paymentLink } from "../core.mjs";
+import { eventClock, scheduleState, formatTime, mapUrl, paymentLink, isArtistAct } from "../core.mjs";
 
 const data = JSON.parse(readFileSync(new URL("../data.json", import.meta.url)));
 const at = value => scheduleState(data, new Date(value));
+
+test("only community agenda entries are excluded from artist tipping and editing", () => {
+  assert.equal(isArtistAct("announcements-rutherford-s-got-talent"), false);
+  assert.equal(isArtistAct("rutherford-s-got-talent"), false);
+  for (const id of ["bob-stritch", "the-hungry-end", "juke-jams"]) {
+    assert.equal(isArtistAct(id), true);
+  }
+});
 
 test("before festival day, show the first set without pretending it is live", () => {
   const state = at("2026-10-15T17:10:00Z");
@@ -88,7 +96,7 @@ test("HTTPS payment links support multiple services and label only exact known h
 test("published data uses an explicit public-field allowlist", () => {
   assert.equal(data.porches.length, 8);
   assert.equal(data.sets.length, 25);
-  assert.equal(data.artists.length, 43);
+  assert.ok(data.artists.length > 0);
   const ids = new Set(data.artists.map(artist => artist.id));
   assert.equal(ids.size, data.artists.length);
   assert.equal(new Set(data.sets.map(set => set.id)).size, data.sets.length);

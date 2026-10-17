@@ -25,6 +25,9 @@ search results include only profiles matching an act on the current agenda.
 Unscheduled submissions are not displayed.
 Artist cards also show a direct donation button when an artist has supplied a
 valid payment link, using the same payment-service labels as the tipping page.
+The Donate / tip page excludes both announcements/Rutherford's Got Talent
+entries from its current/upcoming cards and artist list, just like the artist
+admin. Both community entries remain on the full festival agenda.
 
 ## Poster palette
 

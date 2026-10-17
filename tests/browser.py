@@ -83,16 +83,19 @@ with sync_playwright() as p:
     page.clock.set_fixed_time(datetime.fromisoformat("2026-10-17T17:10:00+00:00"))
     page.goto(f"{BASE}/#home")
     expect(page.locator(".live-pill")).to_have_count(2)
+    live_ids = {entry["artistId"] for entry in schedule["sets"] if entry["start"] <= 790 < entry["end"]}
+    live_profiles = [artist for artist in schedule["artists"] if artist["id"] in live_ids]
+    live_tip_count = sum(bool(artist["tipUrl"]) for artist in live_profiles)
     assert page.locator(".is-live").filter(has_text="this just kim").count() == 1
     assert page.locator(".is-live").filter(has_text="Joe Frame").count() == 1
     expect(page.locator("#main > section").first).to_have_class("section live-now")
-    expect(page.locator(".live-now .jar-note")).to_have_count(2)
+    expect(page.locator(".live-now .jar-note")).to_have_count(2 - live_tip_count)
     page.set_viewport_size({"width": 390, "height": 844})
     page.screenshot(path=str(ARTIFACTS / "porchfest-live-mobile.png"), full_page=True, animations="disabled")
     page.get_by_role("link", name="Donate / tip an artist").click()
     expect(page.get_by_role("heading", name="Show the current artists some love")).to_be_visible()
-    assert page.locator(".is-live .jar-note").count() == 2
-    assert page.locator(".is-live a[href*='venmo.com']").count() == 0
+    expect(page.locator(".is-live .jar-note")).to_have_count(2 - live_tip_count)
+    expect(page.locator(".is-live .tip-button")).to_have_count(live_tip_count)
     expect(page.get_by_role("link", name="Tip Juke Jams on Venmo")).to_have_attribute(
         "href", "https://venmo.com/jukejams"
     )
@@ -160,7 +163,8 @@ with sync_playwright() as p:
                 page.set_viewport_size({"width": width, "height": 844})
                 assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth"), (width, service)
         else:
-            expect(page.locator(".is-live .jar-note")).to_have_count(2)
+            other_live_tips = sum(bool(artist["tipUrl"]) for artist in live_profiles if artist["id"] != "this-just-kim")
+            expect(page.locator(".is-live .jar-note")).to_have_count(2 - other_live_tips)
             expect(page.locator('a[href^="javascript:"]')).to_have_count(0)
         page.goto(f"{BASE}/#artists")
         card = page.locator('.artist-card[data-artist="this-just-kim"]')
@@ -176,6 +180,27 @@ with sync_playwright() as p:
             expect(card.locator(".tip-button")).to_have_count(0)
         expect(card.locator(".jar-note")).to_have_count(0)
         page.unroute("**/data.json")
+    community_ids = {"announcements-rutherford-s-got-talent", "rutherford-s-got-talent"}
+    artist_ids = {entry["artistId"] for entry in schedule["sets"]} - community_ids
+    community_sets = [entry for entry in schedule["sets"] if entry["artistId"] in community_ids]
+    moments = ["2026-10-16T12:00:00+00:00", "2026-10-18T12:00:00+00:00"]
+    for entry in community_sets:
+        for minute in [entry["start"] - 1, entry["start"]]:
+            moments.append(f"2026-10-17T{minute // 60:02}:{minute % 60:02}:00-04:00")
+    for moment in moments:
+        page.clock.set_fixed_time(datetime.fromisoformat(moment))
+        page.goto(f"{BASE}/#support")
+        page.reload()
+        expect(page.locator(".tip-row")).to_have_count(len(artist_ids))
+        for entry in community_sets:
+            expect(page.get_by_role("heading", name=entry["name"], exact=True)).to_have_count(0)
+        for artist_id in ["bob-stritch", "the-hungry-end"]:
+            entry = next(entry for entry in schedule["sets"] if entry["artistId"] == artist_id)
+            expect(page.locator(".tip-list").get_by_role("heading", name=entry["name"], exact=True)).to_be_visible()
+    page.goto(f"{BASE}/#agenda")
+    for entry in community_sets:
+        expect(page.get_by_role("heading", name=entry["name"], exact=True)).to_be_visible()
+
     page.route("**/data.json", lambda route: route.fulfill(status=503, body="Unavailable"))
     page.goto(BASE)
     page.reload()

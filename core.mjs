@@ -1,3 +1,12 @@
+const nonArtistEntries = new Set([
+  "announcements-rutherford-s-got-talent",
+  "rutherford-s-got-talent",
+]);
+
+export function isArtistAct(artistId) {
+  return !nonArtistEntries.has(artistId);
+}
+
 export function eventClock(now, event) {
   const parts = Object.fromEntries(new Intl.DateTimeFormat("en-CA", {
     timeZone: event.timeZone, year: "numeric", month: "2-digit", day: "2-digit",

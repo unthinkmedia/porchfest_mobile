@@ -1,4 +1,4 @@
-import { scheduleState, formatTime, mapUrl, paymentLink } from "./core.mjs";
+import { scheduleState, formatTime, mapUrl, paymentLink, isArtistAct } from "./core.mjs";
 
 const main = document.querySelector("#main");
 let data;
@@ -118,12 +118,13 @@ function artists() {
 }
 
 function support(state) {
-  const featured = state.current.length ? state.current : state.next;
+  const current = state.current.filter(set => isArtistAct(set.artistId));
+  const featured = state.current.length ? current : state.next.filter(set => isArtistAct(set.artistId));
   return `${intro("A LITTLE LOVE GOES A LONG WAY", "Tip the talent.", "The music is free because these artists are generously donating their time. Help make it a good day for them, too.")}
     <div class="support-message"><span class="heart" aria-hidden="true">&#9825;</span><div><h2>Look for the tip jar.</h2><p>Cash at the porch is always a lovely way to say thanks. When an artist shares a digital tipping link, you'll find it here. Tips go directly to the artist, not to this website. Check the recipient in your payment app before sending.</p></div></div>
     ${featured.length ? `<section class="section"><div class="section-heading"><h2>${state.current.length ? "Show the current artists some love" : state.before ? "First artists to cheer on" : "Coming up next"}</h2></div><div class="cards">${featured.map(set => setCard(set, state.current.includes(set), true)).join("")}</div></section>` : ""}
-    <section class="section"><div class="section-heading"><h2>Find an artist to thank</h2></div><p class="small-note">All scheduled acts, with digital tipping links when provided. Otherwise, visit their porch's tip jar.</p>
-    <div class="tip-list">${[...new Map(data.sets.map(set => [set.artistId, set])).values()].map(set =>
+    <section class="section"><div class="section-heading"><h2>Find an artist to thank</h2></div><p class="small-note">All scheduled artists, with digital tipping links when provided. Otherwise, visit their porch's tip jar.</p>
+    <div class="tip-list">${[...new Map(data.sets.filter(set => isArtistAct(set.artistId)).map(set => [set.artistId, set])).values()].map(set =>
       `<article class="tip-row"><div><h3>${escape(set.name)}</h3><p>${escape(porchFor(set).name)}</p></div>${tipContent(artistFor(set))}</article>`
     ).join("")}</div></section>`;
 }

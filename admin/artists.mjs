@@ -1,15 +1,11 @@
 import { validateGuide } from "./validate.mjs";
-
-const nonArtistEntries = new Set([
-  "announcements-rutherford-s-got-talent",
-  "rutherford-s-got-talent",
-]);
+import { isArtistAct } from "../core.mjs";
 
 export function scheduledProfiles(guide) {
   const profiles = new Map(guide.artists.map(artist => [artist.id, artist]));
   const scheduled = new Map();
   for (const set of guide.sets) {
-    if (nonArtistEntries.has(set.artistId)) continue;
+    if (!isArtistAct(set.artistId)) continue;
     if (!scheduled.has(set.artistId)) {
       scheduled.set(set.artistId, profiles.get(set.artistId) ?? {
         id: set.artistId,
@@ -24,7 +20,7 @@ export function scheduledProfiles(guide) {
 }
 
 export function updateArtist(latest, original, artistId, fields) {
-  if (nonArtistEntries.has(artistId)) {
+  if (!isArtistAct(artistId)) {
     throw new Error("This community agenda entry is not editable in the artist desk. Use Agenda & porches instead.");
   }
   const before = original.artists.find(artist => artist.id === artistId);
