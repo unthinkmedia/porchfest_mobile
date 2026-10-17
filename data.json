@@ -170,7 +170,7 @@
     {
       "id": "set-15",
       "artistId": "rhodora",
-      "name": "Rhodora",
+      "name": "UnTwisted",
       "porchId": "porch-5",
       "start": 990,
       "end": 1020
@@ -497,11 +497,9 @@
     },
     {
       "id": "rhodora",
-      "name": "Rhodora",
-      "genre": "Alternative rock",
-      "links": [
-        "https://www.instagram.com/rhodora.band/"
-      ],
+      "name": "UnTwisted",
+      "genre": "Rock/emo",
+      "links": [],
       "tipUrl": "https://venmo.com/Rhodoraband"
     },
     {
